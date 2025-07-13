@@ -8,26 +8,28 @@ const Navbar = () => {
   const [auth, setAuth] = useState(true);
 
   return (
-    <div className="flex justify-between items-center px-6 py-2 bg-white shadow-md relative">
+    <div 
+      className="flex justify-between items-center px-6 py-2 shadow-md relative bg-gradient-to-r from-orange-100 via-pink-200 to-purple-300"
+    >
       {/* Left - Nav Links */}
       <div className="flex space-x-6">
         <Link
           to="/"
-          className="flex items-center gap-2 text-lg font-semibold text-purple-700 hover:text-purple-900 tracking-wider"
+          className="flex items-center gap-2 text-lg font-semibold text-indigo-900 hover:text-purple-900 tracking-wider"
         >
           <FiHome />
           Home
         </Link>
         <Link
           to="/events"
-          className="flex items-center gap-2 text-lg font-semibold text-purple-700 hover:text-purple-900 tracking-wider"
+          className="flex items-center gap-2 text-lg font-semibold text-indigo-900 hover:text-purple-900 tracking-wider"
         >
           <LuCalendarDays />
-          Events
+          All Events
         </Link>
         <Link
           to="/about"
-          className="flex items-center gap-2 text-lg font-semibold text-purple-700 hover:text-purple-900 tracking-wider"
+          className="flex items-center gap-2 text-lg font-semibold text-indigo-900 hover:text-purple-900 tracking-wider"
         >
           <AiOutlineInfoCircle />
           About
@@ -35,11 +37,11 @@ const Navbar = () => {
       </div>
 
       {/* Center - Site Title */}
-      <div className="absolute left-1/2 transform -translate-x-1/2">
-        <h1 className="text-xl font-extrabold text-pink-600 tracking-widest hidden md:block">
+      <Link to="/" className="absolute left-1/2 transform -translate-x-1/2">
+        <h1 className="text-3xl font-extrabold text-pink-600 tracking-widest hidden md:block">
           Eventra
         </h1>
-      </div>
+      </Link>
 
       {/* Right - Auth Buttons or Profile */}
       <div className="flex items-center space-x-4">
@@ -58,11 +60,11 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <span className="text-purple-600 font-bold italic text-base flex items-center gap-1">
+            <span className="text-indigo-900 text-xl font-semibold italic flex items-center gap-1 drop-shadow-sm">
               👋 Welcome back! "userInfo.name"{" "}
             </span>
             <Link to="/profile">
-              <FiUser className="text-2xl text-purple-600 hover:text-purple-800 transition cursor-pointer" />
+              <FiUser className="text-3xl text-grye-900 hover:text-purple-800 transition cursor-pointer" />
             </Link>
           </>
         )}

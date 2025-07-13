@@ -20,13 +20,13 @@ const Topbar = () => {
         </div>
 
         {/* Center Message */}
-        <div className="text-sm text-center flex-grow">
+        <div className="text-m text-center flex-grow">
           <span>Discover top-rated events, workshops, and meetups across India 🎉</span>
         </div>
 
         {/* Contact */}
         <div className="text-sm hidden md:block">
-          <a href="tel:+919876543210" className="hover:text-gray-200 transition">
+          <a href="tel:+919876543210" className="hover:text-gray-200 transition text-m">
             +91 9876543210
           </a>
         </div>

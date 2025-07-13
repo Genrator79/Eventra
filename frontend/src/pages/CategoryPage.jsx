@@ -1,7 +1,9 @@
-import Hero from "../components/Hero";
-import Card from "../components/Card";
-import SerEventCat from "../components/SerEventCat";
-const Home = () => {
+import { useParams } from "react-router-dom";
+import Card from "../components/Card"; // assuming you have a reusable Card component
+
+const CategoryPage = () => {
+  const { category } = useParams();
+
   const AllEvents = [
     {
       id: 1,
@@ -291,38 +293,31 @@ const Home = () => {
       category: "Business",
     },
   ];
-  const filteredEvents = AllEvents.filter((event) => event.isFeatured === true);
+  
+  // Convert to lowercase for flexible matching
+  const filteredEvents = AllEvents.filter(
+    (event) => event.category.toLowerCase() === category.toLowerCase()
+  );
 
-return (
-  <div className="bg-gradient-to-r from-purple-300 via-pink-200 to-orange-100">
-    <Hero />
-
-    {/* Section for event cards */}
-    <section className="max-w-7xl mx-auto px-4 py-12">
-      <h2 className="text-3xl font-bold text-center text-purple-700 mb-8">
-        Featured Events
+  return (
+    <div className="bg-gradient-to-r from-purple-300 via-pink-200 to-orange-100 min-h-screen px-6 py-12">
+      <h2 className="text-3xl sm:text-4xl font-bold text-purple-800 mb-6 text-center capitalize">
+        {category} Events
       </h2>
 
-      {/* Scrollable Card Container */}
-      <div className="overflow-x-auto overflow-y-hidden">
-        <div className="flex space-x-6 scroll-smooth px-2 pb-4">
-          {filteredEvents.map((event, index) => (
-            <div
-              key={index}
-              className="min-w-[300px] max-w-[320px] h-full flex-shrink-0 bg-white rounded-2xl shadow-md overflow-hidden"
-            >
-              <Card event={event} />
-            </div>
+      {filteredEvents.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-9">
+          {filteredEvents.map((event) => (
+            <Card key={event.id} event={event} />
           ))}
         </div>
-      </div>
-    </section>
-
-    {/* Types of events happening */}
-    <SerEventCat />
-  </div>
-);
-
+      ) : (
+        <p className="text-center text-gray-600 text-lg">
+          No events found for this category.
+        </p>
+      )}
+    </div>
+  );
 };
 
-export default Home;
+export default CategoryPage;

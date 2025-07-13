@@ -1,7 +1,6 @@
-import Hero from "../components/Hero";
 import Card from "../components/Card";
-import SerEventCat from "../components/SerEventCat";
-const Home = () => {
+
+const Events = () => {
   const AllEvents = [
     {
       id: 1,
@@ -291,38 +290,19 @@ const Home = () => {
       category: "Business",
     },
   ];
-  const filteredEvents = AllEvents.filter((event) => event.isFeatured === true);
-
-return (
-  <div className="bg-gradient-to-r from-purple-300 via-pink-200 to-orange-100">
-    <Hero />
-
-    {/* Section for event cards */}
-    <section className="max-w-7xl mx-auto px-4 py-12">
-      <h2 className="text-3xl font-bold text-center text-purple-700 mb-8">
-        Featured Events
+  return (
+    <div className="bg-gradient-to-r from-purple-300 via-pink-200 to-orange-100 min-h-screen">
+      <h2 className="text-3xl sm:text-4xl font-extrabold text-center text-[#4b2e2e] pt-10 pb-4 italic drop-shadow-sm">
+        Discover All Events
       </h2>
 
-      {/* Scrollable Card Container */}
-      <div className="overflow-x-auto overflow-y-hidden">
-        <div className="flex space-x-6 scroll-smooth px-2 pb-4">
-          {filteredEvents.map((event, index) => (
-            <div
-              key={index}
-              className="min-w-[300px] max-w-[320px] h-full flex-shrink-0 bg-white rounded-2xl shadow-md overflow-hidden"
-            >
-              <Card event={event} />
-            </div>
-          ))}
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-9 p-7">
+        {AllEvents.map((event, index) => (
+          <Card key={index} event={event} />
+        ))}
       </div>
-    </section>
-
-    {/* Types of events happening */}
-    <SerEventCat />
-  </div>
-);
-
+    </div>
+  );
 };
 
-export default Home;
+export default Events

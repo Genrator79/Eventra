@@ -5,7 +5,11 @@ import { LuCalendarDays } from "react-icons/lu";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 
 const Navbar = () => {
-  const [auth, setAuth] = useState(true);
+  const [auth, setAuth] = useState(false);
+
+  const toggleAuth = () =>{
+    setAuth(!auth);
+  }
 
   return (
     <div 
@@ -47,20 +51,26 @@ const Navbar = () => {
       <div className="flex items-center space-x-4">
         {!auth ? (
           <>
-            <Link to="/login">
-              <button className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition">
+            <Link to="/">
+              <button 
+                onClick={toggleAuth}
+                className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition">
                 Login
               </button>
             </Link>
-            <Link to="/register">
-              <button className="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600 transition">
+            <Link to="/">
+              <button 
+                onClick={toggleAuth}
+                className="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600 transition">
                 Sign Up
               </button>
             </Link>
           </>
         ) : (
           <>
-            <span className="text-indigo-900 text-xl font-semibold italic flex items-center gap-1 drop-shadow-sm">
+            <span 
+              onClick={toggleAuth}
+              className="text-indigo-900 text-xl font-semibold italic flex items-center gap-1 drop-shadow-sm">
               👋 Welcome back!&nbsp;&nbsp;Abhijeet{" "}
             </span>
             <Link to="/profile">

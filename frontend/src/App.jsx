@@ -4,10 +4,12 @@ import Home from "./pages/Home"
 import EventDescription from "./pages/EventDescription"
 import Events from "./pages/Events"
 import CategoryEvents from "./pages/CategoryPage"
+import ScrollToTop from "./common/ScrollToTop"
 
 const App = () => {
   return (
     <BrowserRouter>
+      <ScrollToTop/>
       <Routes>
           <Route path='/' element={<UserLayout/>}> 
           <Route index element={<Home/>}/>

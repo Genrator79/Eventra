@@ -61,7 +61,7 @@ const Navbar = () => {
         ) : (
           <>
             <span className="text-indigo-900 text-xl font-semibold italic flex items-center gap-1 drop-shadow-sm">
-              👋 Welcome back! "userInfo.name"{" "}
+              👋 Welcome back!&nbsp;&nbsp;Abhijeet{" "}
             </span>
             <Link to="/profile">
               <FiUser className="text-3xl text-grye-900 hover:text-purple-800 transition cursor-pointer" />

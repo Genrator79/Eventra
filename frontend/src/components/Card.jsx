@@ -21,6 +21,7 @@ const EventCard = ({ event }) => {
         )}
 
         <img
+          onClick={handleClick}
           src={event.imageUrl}
           alt={event.title}
           className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
@@ -29,7 +30,11 @@ const EventCard = ({ event }) => {
 
       {/* Content */}
       <div className="p-4 flex-grow">
-        <h2 className="text-xl font-bold text-purple-700 mb-1 line-clamp-2">
+        
+        <h2 
+          onClick={handleClick}
+          className="text-xl font-bold text-purple-700 mb-1 line-clamp-2 hover:text-pink-600"
+        >
           {event.title}
         </h2>
         <p className="text-gray-600 mb-3 text-sm line-clamp-2">

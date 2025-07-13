@@ -2,23 +2,23 @@ import { Calendar, MapPin, Users, IndianRupee } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const EventCard = ({ event }) => {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
-
-    const handleClick = () => {
+  const handleClick = () => {
     navigate(`/events/${event.id}`);
   };
 
   return (
-    <div 
-        onClick={handleClick}
-        className="bg-white shadow-xl rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-300 border border-pink-100">
+    <div
+      onClick={handleClick}
+      className="group bg-white shadow-xl rounded-xl overflow-hidden hover:shadow-2xl hover:scale-[1.02] cursor-pointer transition-transform duration-300 border border-pink-100"
+    >
       {/* Event Image */}
-      <div className="h-48 w-full">
+      <div className="h-48 w-full overflow-hidden">
         <img
           src={event.imageUrl}
           alt={event.title}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-110"
         />
       </div>
 
@@ -66,6 +66,3 @@ const EventCard = ({ event }) => {
 };
 
 export default EventCard;
-
-
-

@@ -1,15 +1,47 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import register from "../assets/register.avif";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log("User Registered", { name, email, password });
+    setLoading(true);
+
+    try{
+      const res = await fetch("https://your-backend-api.com/api/auth/login",{
+        method : "POST",
+        headers : {
+          "Content-Type" : "application/json",
+        },
+        body : JSON.stringify({name, email, password}),
+      })
+
+      const data = await res.json();
+
+      if(!res.ok){
+        throw new Error(data.message || "Error in Regestration");
+      }
+
+      // ✅ Store token in localStorage
+      localStorage.setItem("token", data.token);
+
+      navigate("/");
+    }
+    catch(err){
+      alert(err.message);
+      // show toast or error message to user
+    }
+
+    finally{
+      setLoading(false);
+    }
   };
 
   return (
@@ -87,9 +119,14 @@ const Register = () => {
 
           <button
             type="submit"
-            className="w-full bg-orange-500 text-white py-2 rounded-lg font-semibold hover:bg-orange-600 transition"
+            disabled={loading}
+            className={`w-full text-white py-2 rounded-lg font-semibold transition
+              ${loading 
+                  ? "bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 cursor-not-allowed" 
+                  : "bg-orange-500 hover:bg-orange-600"
+              }`}
           >
-            Sign Up
+            { loading ? "Loading..." : "Sign Up" }
           </button>
 
           <p className="mt-6 text-center text-sm text-gray-300">

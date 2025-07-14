@@ -9,6 +9,7 @@ import Login from "./pages/Login"
 import Register from "./pages/Register"
 import About from "./pages/About"
 import Profile from "./pages/Profile"
+import UserDetails from "./pages/UserDetails"
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
           <Route path="/events" element={<Events/>}/>
           <Route path="/about" element={<About/>}/>
           <Route path="/profile" element={<Profile/>}/>
+          <Route path="/profile/Userdetails" element={<UserDetails/>}/>
           <Route path="/events/:id" element={<EventDescription/>}/>
           <Route path="/events/category/:category" element={<CategoryEvents />} />
           </Route>

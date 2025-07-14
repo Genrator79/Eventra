@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import profileImg from "../assets/profile.png";
 import eventImg from "../assets/event-placeholder.png";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const [user, setUser] = useState({
@@ -26,6 +27,11 @@ const Profile = () => {
     },
   ]);
 
+  const navigate = useNavigate();
+
+  const navtodetails = () => {
+    navigate("/profile/userDetails")
+  }
   const [pastEvents, setPastEvents] = useState([
     {
       id: 3,
@@ -41,6 +47,7 @@ const Profile = () => {
     },
   ]);
 
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#ECE4F2] via-[#EADCF5] to-[#D7C9E6] py-12 px-6">
       <div className="max-w-6xl mx-auto space-y-12">
@@ -48,12 +55,17 @@ const Profile = () => {
         <div className="bg-gradient-to-br from-purple-600 via-pink-500 to-purple-700 text-white rounded-3xl shadow-xl p-8 flex flex-col md:flex-row gap-8 items-center w-full">
           <img
             src={profileImg}
+            onClick={navtodetails}
             alt="Profile"
             className="w-36 h-36 rounded-full object-cover border-4 border-white shadow-md hover:scale-105 transition-transform duration-300"
           />
           <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <h2 className="text-4xl font-extrabold tracking-wide">{user.name}</h2>
+              <h2 
+                onClick={navtodetails}
+                className="text-4xl font-extrabold tracking-wide hover:text-orange-200 hover:scale-105 transition-transform duration-300">
+                  {user.name}
+                </h2>
               <p className="text-white/90 text-base font-light">📧 {user.email}</p>
               <p className="text-white/90 text-base font-light">💼 {user.profession}</p>
             </div>

@@ -1,14 +1,48 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import login from "../assets/login.png";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("User Logged in", { email, password });
+    setLoading(true);
+
+    try {
+      const res = await fetch("https://your-backend-api.com/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      // ✅ Store the token
+      localStorage.setItem("token", data.token);
+
+      navigate("/");
+    }
+
+    catch (err) {
+      alert("Login Error:", err.message);
+      // show toast or error message to user
+    }
+    
+    finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -68,9 +102,14 @@ const Login = () => {
 
           <button
             type="submit"
-            className="w-full bg-purple-600 text-white py-2 rounded-lg font-semibold hover:bg-purple-700 transition"
+            disabled={loading}
+            className={`w-full text-white py-2 rounded-lg font-semibold transition
+              ${loading 
+                  ? "bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 cursor-not-allowed" 
+                  : " bg-purple-600 hover:bg-purple-700"}`}
           >
-            Sign in
+            
+            {loading ? "Loading ..." : "Sign in"}
           </button>
 
           <p className="mt-6 text-center text-sm text-gray-300">

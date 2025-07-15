@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import register from "../assets/register.avif";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const Register = () => {
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -15,27 +16,28 @@ const Register = () => {
     setLoading(true);
 
     try{
-      const res = await fetch("https://your-backend-api.com/api/auth/login",{
+      const res = await fetch("http://localhost:9000/api/auth/register",{
         method : "POST",
         headers : {
           "Content-Type" : "application/json",
         },
-        body : JSON.stringify({name, email, password}),
+        body : JSON.stringify({username, email, password}),
       })
 
       const data = await res.json();
 
       if(!res.ok){
-        throw new Error(data.message || "Error in Regestration");
+        return toast.error(data.message || "Error in Registration",{duration : 3000});
       }
 
       // ✅ Store token in localStorage
-      localStorage.setItem("token", data.token);
-
-      navigate("/");
+      localStorage.setItem("token", data.accessToken);
+      toast.success("Registration successful!",{duration : 1000});
+      setTimeout(() => navigate("/"), 500);
+      return;
     }
     catch(err){
-      alert(err.message);
+      toast.error("Something went wrong! Please try again",{duration : 3000});
       // show toast or error message to user
     }
 
@@ -72,9 +74,9 @@ const Register = () => {
             </label>
             <input
               type="text"
-              value={name}
+              value={username}
               id="name"
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 text-black"
               placeholder="Enter your name"
               required

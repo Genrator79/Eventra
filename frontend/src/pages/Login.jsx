@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import login from "../assets/login.png";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("https://your-backend-api.com/api/auth/login", {
+      const res = await fetch("http://localhost:9000/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -25,18 +26,18 @@ const Login = () => {
 
       const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(data.message || "Login failed");
+      if (res.ok && data.accessToken) {
+        localStorage.setItem("token", data.accessToken);
+        toast.success("Login Successful!!!",{duration : 800})
+        setTimeout(()=>navigate("/"),500); // Redirect to home page after successful login
+      } else {
+        toast.error("Login failed! Please try again");
       }
-
-      // ✅ Store the token
-      localStorage.setItem("token", data.token);
-
-      navigate("/");
     }
 
     catch (err) {
-      alert("Login Error:", err.message);
+      console.log(err.message);
+      toast.error("Login Error");
       // show toast or error message to user
     }
     

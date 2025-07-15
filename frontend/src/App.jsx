@@ -10,10 +10,12 @@ import Register from "./pages/Register"
 import About from "./pages/About"
 import Profile from "./pages/Profile"
 import UserDetails from "./pages/UserDetails"
+import { Toaster } from "sonner"
 
 const App = () => {
   return (
     <BrowserRouter>
+      <Toaster position="top-right" richColors />
       <ScrollToTop/>
       <Routes>
           <Route path='/' element={<UserLayout/>}> 

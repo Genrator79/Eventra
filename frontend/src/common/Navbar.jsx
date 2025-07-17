@@ -1,29 +1,48 @@
-import { Link } from "react-router-dom";
-import { useState } from "react";
-import { FiHome, FiUser } from "react-icons/fi";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { FiHome } from "react-icons/fi";
 import { LuCalendarDays } from "react-icons/lu";
 import { AiOutlineInfoCircle } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
+import { FiEdit } from "react-icons/fi";
+import { toast } from "sonner";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [auth, setAuth] = useState(true);
-  const [authMessage, setAuthMessag] = useState("");
+  const [auth, setAuth] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
 
-  const toggleAuth = () => {
-    setAuth(!auth);
-  };
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("userInfo");
 
-  const handelLogin = () => {
+    if (token && user) {
+      setAuth(true);
+      setUserInfo(JSON.parse(user));
+    } else {
+      setAuth(false);
+      setUserInfo(null);
+    }
+  }, [location]); // Re-run on route change
+
+  const handleLogin = () => {
     navigate("/login");
-    setAuthMessag("Please log in")
+    toast.info("Please Login Here", { duration: 1000 });
   };
 
   const handleRegister = () => {
     navigate("/register");
-    setAuthMessag("Create your Eventra account")
+    toast.info("Please Register Here", { duration: 1000 });
   };
+
+  const handleClick = () =>{
+    if (!userInfo || !userInfo.role){
+      console.log("no user role") 
+      return;
+    }
+    userInfo.role ==="admin" ? navigate("/admin") : navigate("/profile");
+  }
 
   return (
     <div className="flex justify-between items-center px-6 py-2 shadow-md relative bg-gradient-to-r from-orange-100 via-pink-200 to-purple-300">
@@ -59,36 +78,48 @@ const Navbar = () => {
         </h1>
       </Link>
 
-      {/* Right - Auth Buttons or Profile */}
-      <div className="flex items-center space-x-4">
-        {!auth ? (
+      {/* Right - Auth Section */}
+      <div className="flex items-center space-x-3">
+        {auth && userInfo ? (
           <>
-            <button
-              onClick={handelLogin}
-              className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition"
+            <span className="text-pink-800 text-lg font-semibold italic flex items-center gap-1 drop-shadow-sm">
+              👋 Welcome! {userInfo.username}
+            </span>
+            <div 
+              onClick={handleClick}
+              className="w-8 h-8 rounded-full bg-pink-950 text-white flex items-center justify-center font-bold"
             >
-              Login
-            </button>
-
-            <button
-              onClick={handleRegister}
-              className="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600 transition"
-            >
-              Sign Up
-            </button>
+              {userInfo.username[0].toUpperCase()}
+            </div>
           </>
         ) : (
           <>
-            <span
-              className="text-indigo-900 text-xl font-semibold italic flex items-center gap-1 drop-shadow-sm"
-            >
-              👋 Welcome! Abhinav{authMessage}{" "}
-            </span>
-            {auth &&
-              <Link to="/profile">
-                <FiUser className="text-3xl text-grye-900 hover:text-purple-800 transition cursor-pointer" />
-              </Link>
-            }
+            {location.pathname === "/login" && (
+              <p className="text-indigo-800 text-2xl">🔐 Login Page</p>
+            )}
+            {location.pathname === "/register" && (
+              <p className="text-purple-800 text-2xl flex items-center gap-1">
+                <FiEdit />
+                Register Page
+              </p>
+            )}
+            {location.pathname !== "/login" &&
+              location.pathname !== "/register" && (
+                <>
+                  <button
+                    onClick={handleLogin}
+                    className="px-4 py-1 rounded-md text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={handleRegister}
+                    className="px-4 py-1 rounded-md text-sm font-semibold text-white bg-purple-500 hover:bg-purple-600 transition"
+                  >
+                    Register
+                  </button>
+                </>
+              )}
           </>
         )}
       </div>

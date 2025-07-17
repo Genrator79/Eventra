@@ -15,6 +15,7 @@ const Events = () => {
 
     const fetchEvents = async()=>{
       const token = localStorage.getItem("token");
+      console.log(token);
       if(!token){
         navigate("/login");
         return toast.error("Unauthorized user. Please login first.",{ duration: 3000 });
@@ -38,7 +39,7 @@ const Events = () => {
 
         if(res.ok){
           setEvents(data.events);
-          toast.success("Events loaded successfully!",{ duration: 4000 });
+          toast.success("Events loaded successfully!",{ duration: 400 });
         }
         else{
           toast.error("Failed to load events",{ duration: 4000 });
@@ -50,7 +51,7 @@ const Events = () => {
       }
     }
     fetchEvents();
-  },[navigate]);
+  },[]);
 
   return (
     <div className="bg-gradient-to-r from-purple-300 via-pink-200 to-orange-100 min-h-screen">

@@ -19,6 +19,28 @@ const getAllEvents = async (req, res) => {
   }
 };
 
+const addEvent = async (req, res) => {
+  try {
+    const eventData = req.body;
+
+    const newEvent = new Event(eventData);
+    const savedEvent = await newEvent.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Event created successfully",
+      event: savedEvent,
+    });
+  } catch (err) {
+    console.error("Error saving event:", err);
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong while creating the event",
+    });
+  }
+};
+
 module.exports = {
   getAllEvents,
+  addEvent
 };

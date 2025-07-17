@@ -11,37 +11,36 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    try{
-      const res = await fetch("http://localhost:9000/api/auth/register",{
-        method : "POST",
-        headers : {
-          "Content-Type" : "application/json",
+    try {
+      const res = await fetch("http://localhost:9000/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        body : JSON.stringify({username, email, password}),
-      })
+        body: JSON.stringify({ username, email, password }),
+      });
 
       const data = await res.json();
 
-      if(!res.ok){
-        return toast.error(data.message || "Error in Registration",{duration : 3000});
+      if (!res.ok) {
+        return toast.error(data.message || "Error in Registration", {
+          duration: 3000,
+        });
       }
 
       // ✅ Store token in localStorage
       localStorage.setItem("token", data.accessToken);
-      toast.success("Registration successful!",{duration : 1000});
+      toast.success("Registration successful!", { duration: 1000 });
       setTimeout(() => navigate("/"), 500);
       return;
-    }
-    catch(err){
-      toast.error("Something went wrong! Please try again",{duration : 3000});
+    } catch (err) {
+      toast.error("Something went wrong! Please try again", { duration: 3000 });
       // show toast or error message to user
-    }
-
-    finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -119,16 +118,38 @@ const Register = () => {
             />
           </div>
 
+          {/* check box */}
+          <div className="form-control mb-3 flex align-baseline">
+            <label className="label cursor-pointer">
+              <input
+                type="checkbox"
+                className="checkbox checkbox-xs"
+                required
+              />
+              <span className="text-xs leading-tight p-2 mb-5">
+                I agree to the{" "}
+                <span className="text-primary hover:text-blue-500 hover:underline">
+                  terms of service
+                </span>{" "}
+                and{" "}
+                <span className="text-primary hover:text-blue-500 hover:underline">
+                  privacy policy
+                </span>
+              </span>
+            </label>
+          </div>
+
           <button
             type="submit"
             disabled={loading}
             className={`w-full text-white py-2 rounded-lg font-semibold transition
-              ${loading 
-                  ? "bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 cursor-not-allowed" 
+              ${
+                loading
+                  ? "bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 cursor-not-allowed"
                   : "bg-orange-500 hover:bg-orange-600"
               }`}
           >
-            { loading ? "Loading..." : "Sign Up" }
+            {loading ? "Loading..." : "Sign Up"}
           </button>
 
           <p className="mt-6 text-center text-sm text-gray-300">

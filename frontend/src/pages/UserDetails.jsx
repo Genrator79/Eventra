@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import {toast} from "sonner";
 
 import {
   FaUser,
@@ -11,20 +12,50 @@ import {
 
 const UserDetails = () => {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [userData, setUserData] = useState({
-    name: "Abhijeet Kumar",
-    email: "abhijeet@example.com",
-    college: "Rishihood University",
-    company: "OpenAI",
-    profession: "Software Engineer",
-    description: "Building the future of AI apps",
-  });
+  username: "",
+  email: "",
+  college: "",
+  company: "",
+  profession: "",
+  description: "",
+});
+
+  useEffect(()=>{
+    const fetchUser = async() =>{
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.alert("Authentication required. Please log in.");
+        return navigate("/login");
+      };
+      console.log("TOKEN:", token);
+      try{
+        const res = await fetch("http://localhost:9000/api/user/me",{
+          headers : {
+            Authorization : `Bearer ${token}`
+          }
+        });
+
+        const data = await res.json();
+
+        if(res.ok){
+          setUserData(data.user);
+        }
+        else{
+          toast.error(data?.message || "Failed to load user info");
+        }
+      }
+      catch(err){
+        toast.error("Error fetching profile");
+      }
+    }
+    fetchUser();
+  },[navigate]);
 
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
-
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,7 +70,7 @@ const UserDetails = () => {
     }
 
     try {
-      const res = await fetch("https://your-backend-api.com/api/user/update", {
+      const res = await fetch("http://localhost:9000/api/user/me/update", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -53,7 +84,7 @@ const UserDetails = () => {
       if (!res.ok) {
         throw new Error(result.message || "Failed to update user details");
       }
-      alert("Profile updated successfully!");
+      toast.success("Profile updated successfully!",{duration : 2500});
       console.log("Server response:", result);
     } catch(error) {
       alert(`Error: ${error.message}`);
@@ -70,7 +101,7 @@ const UserDetails = () => {
         <div className="bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 text-white p-8 rounded-2xl shadow-lg mb-10">
           <h2 className="text-3xl font-bold text-center mb-8 flex items-center justify-center gap-3">
             <FaUser className="text-white" />
-            {userData.name}
+            {userData.username}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -82,7 +113,7 @@ const UserDetails = () => {
               </div>
               <div className="flex items-center gap-3">
                 <FaBriefcase className="text-xl" />
-                <span className="text-lg">{userData.company}</span>
+                <span className="text-lg">{userData?.company || "Not Provided"}</span>
               </div>
             </div>
 
@@ -90,11 +121,11 @@ const UserDetails = () => {
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <FaUniversity className="text-xl" />
-                <span className="text-lg">{userData.college}</span>
+                <span className="text-lg">{userData?.college || "Not Provided"}</span>
               </div>
               <div className="flex items-center gap-3">
                 <FaPenNib className="text-xl" />
-                <span className="text-lg">{userData.profession}</span>
+                <span className="text-lg">{userData?.profession || "Not Provided"}</span>
               </div>
             </div>
           </div>
@@ -102,7 +133,7 @@ const UserDetails = () => {
           {/* About Section */}
           <div className="mt-8">
             <h3 className="text-xl font-semibold mb-2">About</h3>
-            <p className="text-lg leading-relaxed">{userData.description}</p>
+            <p className="text-lg leading-relaxed">{userData?.description || "Not Provided"}</p>
           </div>
         </div>
 
@@ -125,8 +156,8 @@ const UserDetails = () => {
             </label>
             <input
               id="name"
-              name="name"
-              value={userData.name}
+              name="username"
+              value={userData.username}
               onChange={handleChange}
               placeholder="Name"
               className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400"

@@ -4,8 +4,19 @@ import missionImg from "../assets/mission.png";
 import eventsImg from "../assets/events.png";
 import visionImg from "../assets/vision.png";
 import joinUsImg from "../assets/join.png";
+import { useEffect, useState } from "react";
 
 const About = () => {
+
+  const [auth, setAuth] = useState(false);
+
+  useEffect(()=>{
+    const token =localStorage.getItem("token");
+     if(token){
+      setAuth(true);
+     }
+  },[]);
+ 
   return (
     <div className="text-gray-900 bg-gradient-to-br from-[#B19CD9] via-[#D6B8E6] to-[#E9CCED] min-h-screen">
       <div className="text-center py-12">
@@ -66,11 +77,11 @@ const About = () => {
         <p className="text-gray-800 mb-6 max-w-2xl mx-auto text-lg">
           Whether you're an organizer, artist, or attendee—Eventra is your stage. Be part of a vibrant community that celebrates passion, creativity, and connection.
         </p>
-        <Link to="/register">
+        {!auth && <Link to="/register">
           <button className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-purple-700 transition">
             Get Started
           </button>
-        </Link>
+        </Link>}
       </section>
     </div>
   );

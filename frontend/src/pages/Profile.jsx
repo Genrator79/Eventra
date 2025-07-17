@@ -3,16 +3,48 @@ import profileImg from "../assets/profile.png";
 import eventImg from "../assets/event-placeholder.png";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useRef } from "react";
 
 const Profile = () => {
-  const [user, setUser] = useState({
-    name: "Abhijeet Kumar",
-    email: "abhijeet@example.com",
-    joined: "March 2024",
-    profession: "Full Stack Developer",
-    role: "Student at IITBH",
-  });
+  const didRun = useRef(false);
+  const [user, setUser] = useState({});
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    if(didRun.current) return;
+    didRun.current = true;
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("Unauthorized User, Please log in", { duration: 800 });
+        return setTimeout(() => navigate("/login"), 500);
+      }
+
+      console.log("TOKEN:", token);
+
+      try {
+        const res = await fetch("http://localhost:9000/api/user/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          setUser(data.user);
+        } else {
+          toast.error(data?.message || "Failed to load user info");
+        }
+      } catch (err) {
+        toast.error("Error fetching profile");
+      }
+    };
+
+    fetchUser();
+  }, [navigate]);
+
+  console.log(user);
   const [registeredEvents, setRegisteredEvents] = useState([
     {
       id: 1,
@@ -27,8 +59,6 @@ const Profile = () => {
       image: eventImg,
     },
   ]);
-
-  const navigate = useNavigate();
 
   const navtodetails = () => {
     navigate("/profile/userDetails");
@@ -65,32 +95,32 @@ const Profile = () => {
                 onClick={navtodetails}
                 className="text-4xl font-extrabold tracking-wide hover:text-orange-200 hover:scale-105 transition-transform duration-300"
               >
-                {user.name}
+                {user?.username}
               </h2>
               <p className="text-white/90 text-base font-light">
-                📧 {user.email}
+                📧 {user?.email}
               </p>
               <p className="text-white/90 text-base font-light">
-                💼 {user.profession}
+                💼 {user?.profession || "Not Provided"}
               </p>
             </div>
             <div className="flex flex-col justify-center items-start md:items-end space-y-2">
               <p className="text-white/90 text-base font-light">
-                🎓 {user.role}
+                🎓 {user?.company || user?.collage || "Not Provided"}
               </p>
               <p className="text-white/80 text-sm italic">
-                🎉 Joined: {user.joined}
+                🎉 Joined: {new Date(user?.createdAt).toLocaleDateString()}
               </p>
               <div className="flex gap-4 mt-4">
                 <div className="bg-white text-purple-700 text-center rounded-full w-24 h-24 flex flex-col justify-center items-center shadow-md border-4 border-purple-300">
                   <span className="text-2xl font-bold">
-                    {registeredEvents.length}
+                    {registeredEvents?.length || 0}
                   </span>
                   <span className="text-xs font-medium">To Attend</span>
                 </div>
                 <div className="bg-white text-pink-600 text-center rounded-full w-24 h-24 flex flex-col justify-center items-center shadow-md border-4 border-pink-300">
                   <span className="text-2xl font-bold">
-                    {pastEvents.length}
+                    {pastEvents?.length || 0}
                   </span>
                   <span className="text-xs font-medium">Attended</span>
                 </div>
@@ -105,7 +135,7 @@ const Profile = () => {
             Registered Events
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {registeredEvents.map((event) => (
+            {registeredEvents?.map((event) => (
               <div
                 key={event.id}
                 className="bg-gradient-to-br from-purple-50 via-pink-50 to-purple-100 rounded-lg shadow-md overflow-hidden"
@@ -132,7 +162,7 @@ const Profile = () => {
             Past Attended Events
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {pastEvents.map((event) => (
+            {pastEvents?.map((event) => (
               <div
                 key={event.id}
                 className="bg-gradient-to-br from-pink-50 via-purple-50 to-pink-100 rounded-lg shadow-md overflow-hidden"
@@ -163,6 +193,7 @@ const Profile = () => {
             personalized event recommendations here.
           </p>
         </div>
+
         {/* Logout Button */}
         <div className="flex justify-center pt-4">
           <button

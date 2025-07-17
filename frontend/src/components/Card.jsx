@@ -5,7 +5,7 @@ const EventCard = ({ event }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/events/${event.id}`);
+    navigate(`/events/${event._id}`);
   };
 
   return (

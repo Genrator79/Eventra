@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import login from "../assets/login.png";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -28,20 +29,25 @@ const Login = () => {
 
       if (res.ok && data.accessToken) {
         localStorage.setItem("token", data.accessToken);
-        toast.success("Login Successful!!!",{duration : 800})
-        setTimeout(()=>navigate("/"),500); // Redirect to home page after successful login
+        const decoded = jwtDecode(data.accessToken);
+        console.log(decoded);//check
+        localStorage.setItem(
+          "userInfo",
+          JSON.stringify({
+            username: decoded.username,
+            role: decoded.role,
+          })
+        );
+        toast.success("Login Successful!!!", { duration: 800 });
+        setTimeout(() => navigate("/"), 500); // Redirect to home page after successful login
       } else {
-        toast.error("Login failed! Please try again");
+        toast.error(data?.message || "Invalid email or password");
       }
-    }
-
-    catch (err) {
+    } catch (err) {
       console.log(err.message);
       toast.error("Login Error");
       // show toast or error message to user
-    }
-    
-    finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -105,11 +111,12 @@ const Login = () => {
             type="submit"
             disabled={loading}
             className={`w-full text-white py-2 rounded-lg font-semibold transition
-              ${loading 
-                  ? "bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 cursor-not-allowed" 
-                  : " bg-purple-600 hover:bg-purple-700"}`}
+              ${
+                loading
+                  ? "bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 cursor-not-allowed"
+                  : " bg-purple-600 hover:bg-purple-700"
+              }`}
           >
-            
             {loading ? "Loading ..." : "Sign in"}
           </button>
 

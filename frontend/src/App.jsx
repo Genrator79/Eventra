@@ -10,7 +10,9 @@ import Register from "./pages/Register"
 import About from "./pages/About"
 import Profile from "./pages/Profile"
 import UserDetails from "./pages/UserDetails"
+import Admin from "./pages/Admin"
 import { Toaster } from "sonner"
+import AddEvent from "./pages/AddEvent"
 
 const App = () => {
   return (
@@ -28,6 +30,8 @@ const App = () => {
           <Route path="/profile/Userdetails" element={<UserDetails/>}/>
           <Route path="/events/:id" element={<EventDescription/>}/>
           <Route path="/events/category/:category" element={<CategoryEvents />} />
+          <Route path="/admin" element={<Admin/>}/>
+          <Route path="/admin/addevent" element={<AddEvent/>}/>
           </Route>
       </Routes>
     </BrowserRouter>

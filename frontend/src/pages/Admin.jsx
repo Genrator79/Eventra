@@ -10,6 +10,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import {toast} from "sonner"
 
 const COLORS = [
   "#8B5CF6", // violet

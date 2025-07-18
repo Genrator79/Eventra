@@ -162,9 +162,9 @@ const Profile = () => {
             Past Attended Events
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {pastEvents?.map((event) => (
+            {pastEvents?.map((event,index) => (
               <div
-                key={event.id}
+                key={index}
                 className="bg-gradient-to-br from-pink-50 via-purple-50 to-pink-100 rounded-lg shadow-md overflow-hidden"
               >
                 <img

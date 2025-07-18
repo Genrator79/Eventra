@@ -37,9 +37,7 @@ const Home = () => {
   return (
     <div className="bg-gradient-to-r from-purple-300 via-pink-200 to-orange-100">
       <Hero />
-
-      {}
-
+      
       {/* Section for event cards */}
       <section className="max-w-7xl mx-auto px-4 py-12">
         <h2 className="text-3xl font-bold text-center text-purple-700 mb-8">

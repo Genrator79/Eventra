@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import {toast} from "sonner";
+import { toast } from "sonner";
 
 import {
   FaUser,
@@ -14,44 +14,46 @@ const UserDetails = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [userData, setUserData] = useState({
-  username: "",
-  email: "",
-  college: "",
-  company: "",
-  profession: "",
-  description: "",
-});
+    username: "",
+    email: "",
+    college: "",
+    company: "",
+    profession: "",
+    description: "",
+  });
 
-  useEffect(()=>{
-    const fetchUser = async() =>{
+  const didRun = useRef(false);
+
+  useEffect(() => {
+    if(didRun.current) return;
+    didRun.current = true;
+    const fetchUser = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        toast.alert("Authentication required. Please log in.");
+        toast.error("Authentication required. Please log in.");
         return navigate("/login");
-      };
+      }
       console.log("TOKEN:", token);
-      try{
-        const res = await fetch("http://localhost:9000/api/user/me",{
-          headers : {
-            Authorization : `Bearer ${token}`
-          }
+      try {
+        const res = await fetch("http://localhost:9000/api/user/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         const data = await res.json();
 
-        if(res.ok){
+        if (res.ok) {
           setUserData(data.user);
-        }
-        else{
+        } else {
           toast.error(data?.message || "Failed to load user info");
         }
-      }
-      catch(err){
+      } catch (err) {
         toast.error("Error fetching profile");
       }
-    }
+    };
     fetchUser();
-  },[navigate]);
+  }, [navigate]);
 
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -84,12 +86,14 @@ const UserDetails = () => {
       if (!res.ok) {
         throw new Error(result.message || "Failed to update user details");
       }
-      toast.success("Profile updated successfully!",{duration : 2500});
+      toast.success("Profile updated successfully!", { duration: 2500 });
       console.log("Server response:", result);
-    } catch(error) {
+    } 
+    catch (error) {
       alert(`Error: ${error.message}`);
       console.error("Error updating user:", error);
-    } finally {
+    } 
+    finally {
       setLoading(false);
     }
   };
@@ -113,7 +117,9 @@ const UserDetails = () => {
               </div>
               <div className="flex items-center gap-3">
                 <FaBriefcase className="text-xl" />
-                <span className="text-lg">{userData?.company || "Not Provided"}</span>
+                <span className="text-lg">
+                  {userData?.company || "Not Provided"}
+                </span>
               </div>
             </div>
 
@@ -121,11 +127,15 @@ const UserDetails = () => {
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <FaUniversity className="text-xl" />
-                <span className="text-lg">{userData?.college || "Not Provided"}</span>
+                <span className="text-lg">
+                  {userData?.college || "Not Provided"}
+                </span>
               </div>
               <div className="flex items-center gap-3">
                 <FaPenNib className="text-xl" />
-                <span className="text-lg">{userData?.profession || "Not Provided"}</span>
+                <span className="text-lg">
+                  {userData?.profession || "Not Provided"}
+                </span>
               </div>
             </div>
           </div>
@@ -133,7 +143,9 @@ const UserDetails = () => {
           {/* About Section */}
           <div className="mt-8">
             <h3 className="text-xl font-semibold mb-2">About</h3>
-            <p className="text-lg leading-relaxed">{userData?.description || "Not Provided"}</p>
+            <p className="text-lg leading-relaxed">
+              {userData?.description || "Not Provided"}
+            </p>
           </div>
         </div>
 

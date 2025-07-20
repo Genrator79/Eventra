@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const AddEventForm = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const didRun = useRef(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -22,6 +23,27 @@ const AddEventForm = () => {
     isFeatured: false,
   });
 
+  useEffect(()=>{
+    if(didRun.current) return;
+    didRun.current = true;
+
+    const token = localStorage.getItem("token");
+
+    if(!token){
+      toast.error("Unauthorized user. Please login first.");
+      navigate("/login");
+      return;
+    }
+
+    const user = localStorage.getItem("userInfo");
+
+    if(!user || user.role !=="admin"){
+      toast.error("Only admins are allowed.");
+      navigate("/", {replace : true});
+      return;
+    }
+  })
+  
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({

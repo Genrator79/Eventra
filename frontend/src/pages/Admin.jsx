@@ -1,3 +1,4 @@
+import { use, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   PieChart,
@@ -10,7 +11,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import {toast} from "sonner"
+import { toast } from "sonner";
 
 const COLORS = [
   "#8B5CF6", // violet
@@ -22,6 +23,28 @@ const COLORS = [
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const didRun = useRef(false);
+
+  
+
+  useEffect(() => {
+    if (didRun.current) return;
+    didRun.current = true;
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("userInfo"));
+
+    if (!token) {
+      toast.error("Unauthorized user. Please login first.");
+      navigate("/login");
+      return;
+    }
+
+    if (!user || user.role !== "admin") {
+      toast.error("Only admins are allowed.");
+      navigate("/", { replace: true });
+      return;
+    }
+  }, []);
 
   const handleAdd = (e) => {
     navigate("/admin/addevent");
@@ -242,20 +265,20 @@ const AdminDashboard = () => {
           </ul>
         </div>
       </div>
-      
+
       {/* Logout Button */}
-        <div className="flex justify-center pt-4">
-          <button
-            onClick={() => {
-              localStorage.removeItem("token");
-              toast.success("Logged out successfully!", { duration: 800 });
-              setTimeout(() => navigate("/login"), 500);
-            }}
-            className="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2 rounded-full shadow-lg transition w-full"
-          >
-            Logout
-          </button>
-        </div>
+      <div className="flex justify-center pt-4">
+        <button
+          onClick={() => {
+            localStorage.removeItem("token");
+            toast.success("Logged out successfully!", { duration: 800 });
+            setTimeout(() => navigate("/login"), 500);
+          }}
+          className="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2 rounded-full shadow-lg transition w-full"
+        >
+          Logout
+        </button>
+      </div>
     </div>
   );
 };

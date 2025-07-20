@@ -84,13 +84,13 @@ const UserDetails = () => {
       const result = await res.json();
 
       if (!res.ok) {
-        throw new Error(result.message || "Failed to update user details");
+        toast.error(result.message || "Failed to update user details", {duration : 1000});
       }
       toast.success("Profile updated successfully!", { duration: 2500 });
       console.log("Server response:", result);
     } 
     catch (error) {
-      alert(`Error: ${error.message}`);
+      toast.error(error.message || "Failed to update user details");
       console.error("Error updating user:", error);
     } 
     finally {

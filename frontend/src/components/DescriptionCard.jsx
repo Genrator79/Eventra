@@ -7,6 +7,7 @@ const EventDescription = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const didRun = useRef(false);
+  const [loading, setLoading] = useState(false);
 
   const [events, setEvents] = useState([]);
 
@@ -66,6 +67,11 @@ const EventDescription = () => {
     hour: "2-digit",
     minute: "2-digit",
   });
+
+  const handleRegistration = () =>{
+    setLoading(true);
+    setTimeout(()=>navigate(`/events/registration/${id}`),500);
+  }
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-10 space-y-10">
@@ -163,8 +169,10 @@ const EventDescription = () => {
           <IndianRupee className="w-5 h-5" />
           <span className="text-xl">{event.price}</span>
         </div>
-        <button className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 text-white px-6 py-3 rounded-lg font-bold hover:scale-105 transition">
-          Register Now
+        <button 
+          onClick={handleRegistration}
+          className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 text-white px-6 py-3 rounded-lg font-bold hover:scale-105 transition">
+          {loading ? "Paying..." : "Register Now"}
         </button>
       </div>
     </div>

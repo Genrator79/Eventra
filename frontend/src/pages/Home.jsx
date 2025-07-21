@@ -13,7 +13,7 @@ const Home = () => {
     didRun.current=true;
     const fetchEvents = async () => {
       try {
-        const res = await fetch("http://localhost:9000/api/events/featured");
+        const res = await fetch("https://eventra-backend-lsy8.onrender.com/api/events/featured");
 
         const data = await res.json();
 

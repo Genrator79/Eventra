@@ -23,7 +23,7 @@ const Profile = () => {
       console.log("TOKEN:", token);
 
       try {
-        const res = await fetch("http://localhost:9000/api/user/me", {
+        const res = await fetch("https://eventra-backend-lsy8.onrender.com/api/user/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

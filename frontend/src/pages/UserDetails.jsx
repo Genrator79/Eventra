@@ -35,7 +35,7 @@ const UserDetails = () => {
       }
       console.log("TOKEN:", token);
       try {
-        const res = await fetch("http://localhost:9000/api/user/me", {
+        const res = await fetch("https://eventra-backend-lsy8.onrender.com/api/user/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -72,7 +72,7 @@ const UserDetails = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:9000/api/user/me/update", {
+      const res = await fetch("https://eventra-backend-lsy8.onrender.com/api/user/me/update", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

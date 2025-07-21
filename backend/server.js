@@ -9,10 +9,10 @@ const userRoutes = require("./routes/user-route");
 ConnectToDB();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || "https://eventra-5j2m.onrender.com";
 
 app.use(cors ({
-    origin : "http://localhost:5173",
+    origin : "https://eventra-5j2m.onrender.com",
     credentials : true,
 }));
 

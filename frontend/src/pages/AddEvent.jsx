@@ -67,7 +67,7 @@ const AddEventForm = () => {
       });
     }
     try {
-      const res = await fetch("http://localhost:9000/api/events/add", {
+      const res = await fetch("https://eventra-backend-lsy8.onrender.com/api/events/add", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -35,14 +35,15 @@ const AddEventForm = () => {
       return;
     }
 
-    const user = localStorage.getItem("userInfo");
+    const user = JSON.parse(localStorage.getItem("userInfo"));
+    console.log(user);
 
     if(!user || user.role !=="admin"){
       toast.error("Only admins are allowed.");
       navigate("/", {replace : true});
       return;
     }
-  })
+  },[navigate])
   
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;

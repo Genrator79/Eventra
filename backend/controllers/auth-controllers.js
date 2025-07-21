@@ -30,9 +30,19 @@ const registerUser = async (req, res) => {
       });
     }
 
+    const accessToken = jwt.sign({
+      userId : newlyCreatedUser._id,
+      username : newlyCreatedUser.username,
+      role : newlyCreatedUser.role,
+    },
+    process.env.JWT_SECRET_KEY,
+    {expiresIn : "1d"}
+    )
+
     res.status(201).json({
       success: true,
       message: "User registration successful 🥳🥳",
+      accessToken,
     });
   } catch (err) {
     console.error("Register User Error:", err);

@@ -21,7 +21,7 @@ const CategoryPage = () => {
     }
     const getEvents = async () => {
       try {
-        const res = await fetch("http://localhost:9000/api/events", {
+        const res = await fetch("https://eventra-backend-lsy8.onrender.com/api/events", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

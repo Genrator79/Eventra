@@ -86,7 +86,7 @@ const Navbar = () => {
         {/* Center - Title */}
         <Link
           to="/"
-          className="absolute left-1/2 transform -translate-x-1/2 hidden md:block"
+          className="absolute left-1/2 transform-translate-x-1/2 hidden md:block"
         >
           <h1 className="text-3xl font-extrabold text-pink-600 tracking-widest">
             Eventra

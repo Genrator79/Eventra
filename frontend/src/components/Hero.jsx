@@ -1,9 +1,15 @@
 import { Search } from "lucide-react";
 import { useState } from "react";
 import herobackground from "../assets/herobackground.mp4";
+import { useNavigate } from "react-router-dom";
 
 export default function HeroSection() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");//for fututre
+  const navigate = useNavigate();
+  
+  const handleClick = () =>{
+    navigate("/events");
+  }
 
   return (
     <section className="relative bg-gradient-to-r from-purple-700 via-pink-500 to-red-500 overflow-hidden">
@@ -45,7 +51,9 @@ export default function HeroSection() {
               />
             </div>
 
-            <button className="bg-pink-100 text-purple-800 font-semibold px-8 py-3 rounded-xl shadow-md hover:bg-pink-200 hover:text-purple-900 hover:scale-105 transition duration-200">
+            <button 
+              onClick={handleClick}
+              className="bg-pink-100 text-purple-800 font-semibold px-8 py-3 rounded-xl shadow-md hover:bg-pink-200 hover:text-purple-900 hover:scale-105 transition duration-200">
                 Explore Events
             </button>
           </div>

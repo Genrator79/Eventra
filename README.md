@@ -45,7 +45,6 @@ Eventra/
 │   ├── middlewares/
 │   └── ...
 ├── frontend/
-│   ├── components/
-│   ├── app/
+│   ├── src
 │   ├── public/
 │   └── ...

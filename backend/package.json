@@ -4,8 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "dev" : "nodemon server.js",
-    "seed" : "node seeder.js"
+    "dev": "nodemon server.js",
+    "seed": "node seeder.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
+    "express-rate-limiter": "^1.3.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.3",
     "multer": "^2.0.1"

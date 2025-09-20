@@ -62,131 +62,156 @@ const Register = () => {
   };
 
   return (
-    <div className="flex min-h-screen">
-      {/* Left - Form Section */}
-      <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-6 sm:p-12 bg-gradient-to-br from-purple-400 via-pink-300 to-orange-250">
-        <form
-          onSubmit={handleSubmit}
-          className="w-full max-w-md p-8 rounded-2xl shadow-lg border border-pink-300
-                     bg-gradient-to-br from-[#2e002e] via-[#6b0f1a] to-[#ff6a00] text-white min-h-[520px]"
-        >
-          <div className="flex justify-center mb-4">
-            <h1 className="text-3xl font-bold text-orange-300">Eventra</h1>
-          </div>
-          <h2 className="text-xl font-semibold text-center mb-2 text-gray-100">
-            Let’s get started 🎉
-          </h2>
-          <p className="text-sm text-center text-gray-300 mb-6">
-            Fill in the details to create your account
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-red-50 dark:from-gray-900 dark:via-purple-900 dark:to-pink-900 flex items-center justify-center p-4">
+      <div className="w-full max-w-6xl bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+        <div className="flex min-h-[600px]">
+          {/* Left Section - Form */}
+          <div className="w-full md:w-1/2 flex flex-col justify-center p-8 md:p-12">
+            <div className="max-w-md mx-auto w-full">
+              {/* Logo */}
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 rounded-xl flex items-center justify-center">
+                    <span className="text-2xl">✨</span>
+                  </div>
+                  <h1 className="text-3xl font-bold gradient-text">Eventra</h1>
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+                  Let's get started! 🎉
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Create your account to join amazing events
+                </p>
+              </div>
 
-          <div className="mb-4">
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-200 mb-1"
-            >
-              Name
-            </label>
-            <input
-              type="text"
-              value={username}
-              id="name"
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 text-black"
-              placeholder="Enter your name"
-              required
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+                  >
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    value={username}
+                    id="name"
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                    placeholder="Enter your full name"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+                  >
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    id="email"
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+                  >
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    value={password}
+                    id="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                    placeholder="Create a strong password"
+                    required
+                  />
+                </div>
+
+                <div className="flex items-start">
+                  <div className="flex items-center h-5">
+                    <input
+                      type="checkbox"
+                      id="terms"
+                      className="w-4 h-4 text-purple-600 bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-purple-500 focus:ring-2"
+                      required
+                    />
+                  </div>
+                  <div className="ml-3 text-sm">
+                    <label htmlFor="terms" className="text-gray-600 dark:text-gray-300">
+                      I agree to the{" "}
+                      <a href="#" className="text-purple-600 hover:text-purple-700 font-medium hover:underline">
+                        Terms of Service
+                      </a>{" "}
+                      and{" "}
+                      <a href="#" className="text-purple-600 hover:text-purple-700 font-medium hover:underline">
+                        Privacy Policy
+                      </a>
+                    </label>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`w-full py-3 rounded-xl font-semibold transition-all duration-300 ${
+                    loading
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "btn-primary hover:shadow-lg hover:shadow-purple-500/25"
+                  }`}
+                >
+                  {loading ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Creating account...
+                    </div>
+                  ) : (
+                    "Create Account"
+                  )}
+                </button>
+
+                <div className="text-center">
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Already have an account?{" "}
+                    <Link
+                      to="/login"
+                      className="text-purple-600 hover:text-purple-700 font-semibold hover:underline"
+                    >
+                      Sign in here
+                    </Link>
+                  </p>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          {/* Right Section - Image */}
+          <div className="hidden md:block w-1/2 relative">
+            <img
+              src={register}
+              alt="Register for Eventra"
+              className="h-full w-full object-cover"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+            <div className="absolute bottom-8 left-8 right-8 text-white">
+              <h3 className="text-2xl font-bold mb-4">Join our community!</h3>
+              <p className="text-lg opacity-90">
+                Connect with event organizers, discover amazing events, and create unforgettable memories with like-minded people.
+              </p>
+            </div>
           </div>
-
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-200 mb-1"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              value={email}
-              id="email"
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 text-black"
-              placeholder="Enter your email"
-              required
-            />
-          </div>
-
-          <div className="mb-6">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-200 mb-1"
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              id="password"
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 text-black"
-              placeholder="Create a password"
-              required
-            />
-          </div>
-
-          {/* check box */}
-          <div className="form-control mb-3 flex align-baseline">
-            <label className="label cursor-pointer">
-              <input
-                type="checkbox"
-                className="checkbox checkbox-xs"
-                required
-              />
-              <span className="text-xs leading-tight p-2 mb-5">
-                I agree to the{" "}
-                <span className="text-primary hover:text-blue-500 hover:underline">
-                  terms of service
-                </span>{" "}
-                and{" "}
-                <span className="text-primary hover:text-blue-500 hover:underline">
-                  privacy policy
-                </span>
-              </span>
-            </label>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full text-white py-2 rounded-lg font-semibold transition
-              ${
-                loading
-                  ? "bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 cursor-not-allowed"
-                  : "bg-orange-500 hover:bg-orange-600"
-              }`}
-          >
-            {loading ? "Loading..." : "Sign Up"}
-          </button>
-
-          <p className="mt-6 text-center text-sm text-gray-300">
-            Already have an account?{" "}
-            <Link
-              to="/login"
-              className="text-orange-300 hover:underline font-medium"
-            >
-              Login
-            </Link>
-          </p>
-        </form>
-      </div>
-
-      {/* Right Section - Image */}
-      <div className="hidden md:block w-1/2">
-        <img
-          src={register}
-          alt="Register for Eventra"
-          className="h-full w-full object-cover"
-        />
+        </div>
       </div>
     </div>
   );

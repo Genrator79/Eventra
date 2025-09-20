@@ -14,30 +14,33 @@ import Admin from "./pages/Admin"
 import { Toaster } from "sonner"
 import AddEvent from "./pages/AddEvent"
 import Registration from "./pages/Registration"
+import { ThemeProvider } from "./contexts/ThemeContext"
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <Toaster position="top-right" richColors />
-      <ScrollToTop/>
-      <Routes>
-          <Route path='/' element={<UserLayout/>}> 
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/register" element={<Register/>}/>
-          <Route index element={<Home/>}/>
-          <Route path="/events" element={<Events/>}/>
-          <Route path="/about" element={<About/>}/>
-          <Route path="/profile" element={<Profile/>}/>
-          <Route path="/profile/Userdetails" element={<UserDetails/>}/>
-          <Route path="/events/:id" element={<EventDescription/>}/>
-          <Route path="/events/category/:category" element={<CategoryEvents />} />
-          <Route path="/admin" element={<Admin/>}/>
-          <Route path="/admin/addevent" element={<AddEvent/>}/>
-          <Route path="/events/registration/:eventId" element={<Registration />} />
+    <ThemeProvider>
+      <BrowserRouter>
+        <Toaster position="top-right" richColors />
+        <ScrollToTop/>
+        <Routes>
+            <Route path='/' element={<UserLayout/>}> 
+            <Route path="/login" element={<Login/>}/>
+            <Route path="/register" element={<Register/>}/>
+            <Route index element={<Home/>}/>
+            <Route path="/events" element={<Events/>}/>
+            <Route path="/about" element={<About/>}/>
+            <Route path="/profile" element={<Profile/>}/>
+            <Route path="/profile/Userdetails" element={<UserDetails/>}/>
+            <Route path="/events/:id" element={<EventDescription/>}/>
+            <Route path="/events/category/:category" element={<CategoryEvents />} />
+            <Route path="/admin" element={<Admin/>}/>
+            <Route path="/admin/addevent" element={<AddEvent/>}/>
+            <Route path="/events/registration/:eventId" element={<Registration />} />
 
-          </Route>
-      </Routes>
-    </BrowserRouter>
+            </Route>
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   )
 }
 

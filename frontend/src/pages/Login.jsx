@@ -53,92 +53,125 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen">
-      {/* Left Section - Form */}
-      <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-6 sm:p-12 bg-gradient-to-br from-purple-400 via-pink-300 to-orange-250">
-        <form
-          onSubmit={handleSubmit}
-          className="w-full max-w-md p-9 rounded-2xl shadow-lg border border-purple-300 
-             bg-gradient-to-br from-gray-800 via-purple-900 to-black text-white min-h-[500px]"
-        >
-          <div className="flex justify-center mb-4">
-            <h1 className="text-3xl font-bold text-pink-300">Eventra</h1>
-          </div>
-          <h2 className="text-xl font-semibold text-center mb-2 text-gray-100">
-            Welcome back 👋🏼
-          </h2>
-          <p className="text-sm text-center text-gray-300 mb-6">
-            Enter your credentials to access your account
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-red-50 dark:from-gray-900 dark:via-purple-900 dark:to-pink-900 flex items-center justify-center p-4">
+      <div className="w-full max-w-6xl bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+        <div className="flex min-h-[600px]">
+          {/* Left Section - Form */}
+          <div className="w-full md:w-1/2 flex flex-col justify-center p-8 md:p-12">
+            <div className="max-w-md mx-auto w-full">
+              {/* Logo */}
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 rounded-xl flex items-center justify-center">
+                    <span className="text-2xl">✨</span>
+                  </div>
+                  <h1 className="text-3xl font-bold gradient-text">Eventra</h1>
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+                  Welcome back! 👋
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Sign in to your account to continue
+                </p>
+              </div>
 
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-200 mb-1"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              value={email}
-              id="email"
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-black"
-              placeholder="Enter your email"
-              required
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+                  >
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    id="email"
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+                  >
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    value={password}
+                    id="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                    placeholder="Enter your password"
+                    required
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center">
+                    <input type="checkbox" className="rounded border-gray-300 dark:border-gray-600 text-purple-600 focus:ring-purple-500 dark:bg-gray-700" />
+                    <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">Remember me</span>
+                  </label>
+                  <a href="#" className="text-sm text-purple-600 hover:text-purple-700 font-medium">
+                    Forgot password?
+                  </a>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`w-full py-3 rounded-xl font-semibold transition-all duration-300 ${
+                    loading
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "btn-primary hover:shadow-lg hover:shadow-purple-500/25"
+                  }`}
+                >
+                  {loading ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Signing in...
+                    </div>
+                  ) : (
+                    "Sign In"
+                  )}
+                </button>
+
+                <div className="text-center">
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Don't have an account?{" "}
+                    <Link
+                      to="/register"
+                      className="text-purple-600 hover:text-purple-700 font-semibold hover:underline"
+                    >
+                      Create one now
+                    </Link>
+                  </p>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          {/* Right Section - Image */}
+          <div className="hidden md:block w-1/2 relative">
+            <img
+              src={login}
+              alt="Login to Account"
+              className="h-full w-full object-cover"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+            <div className="absolute bottom-8 left-8 right-8 text-white">
+              <h3 className="text-2xl font-bold mb-4">Join thousands of event enthusiasts!</h3>
+              <p className="text-lg opacity-90">
+                Discover amazing events, connect with like-minded people, and create unforgettable memories.
+              </p>
+            </div>
           </div>
-
-          <div className="mb-6">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-200 mb-1"
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              id="password"
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-black"
-              placeholder="Enter your password"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full text-white py-2 rounded-lg font-semibold transition
-              ${
-                loading
-                  ? "bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 cursor-not-allowed"
-                  : " bg-purple-600 hover:bg-purple-700"
-              }`}
-          >
-            {loading ? "Loading ..." : "Sign in"}
-          </button>
-
-          <p className="mt-6 text-center text-sm text-gray-300">
-            Don&apos;t have an account?{" "}
-            <Link
-              to="/register"
-              className="text-pink-400 hover:underline font-medium"
-            >
-              Register
-            </Link>
-          </p>
-        </form>
-      </div>
-
-      {/* Right Section - Image */}
-      <div className="hidden md:block w-1/2">
-        <img
-          src={login}
-          alt="Login to Account"
-          className="h-full w-full object-cover"
-        />
+        </div>
       </div>
     </div>
   );

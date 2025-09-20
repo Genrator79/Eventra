@@ -36,13 +36,11 @@ const UserDetails = () => {
         toast.error("Authentication required. Please log in.");
         return navigate("/login");
       }
-      console.log("TOKEN:", token);
       try {
         setDataLoading(true);
         const response = await userAPI.getProfile(token);
 
         if (response.ok) {
-          console.log("User data received:", response.data.user);
           const user = response.data.user;
           setUserData({
             username: user.username || "",
@@ -56,7 +54,6 @@ const UserDetails = () => {
           toast.error(response.data?.message || "Failed to load user info");
         }
       } catch (err) {
-        console.error("Error fetching profile:", err);
         toast.error("Error fetching profile");
       } finally {
         setDataLoading(false);
@@ -88,12 +85,10 @@ const UserDetails = () => {
         toast.error(response.data.message || "Failed to update user details", {duration : 1000});
       } else {
         toast.success("Profile updated successfully!", { duration: 2500 });
-        console.log("Server response:", response.data);
       }
     } 
     catch (error) {
       toast.error(error.message || "Failed to update user details");
-      console.error("Error updating user:", error);
     } 
     finally {
       setLoading(false);
@@ -108,17 +103,8 @@ const UserDetails = () => {
     );
   }
 
-  console.log("Current userData state:", userData);
-
   return (
-    <div className="min-h-screen p-6 bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100">
-      {/* Debug Section - Remove this after testing */}
-      <div className="mb-4 p-4 bg-yellow-100 border border-yellow-400 rounded-lg">
-        <h4 className="font-bold text-yellow-800">Debug Info:</h4>
-        <pre className="text-xs text-yellow-700 mt-2">
-          {JSON.stringify(userData, null, 2)}
-        </pre>
-      </div>
+    <div className="min-h-screen p-6 bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900">
       <div className="w-full mx-auto">
         {/* === Current Details Card === */}
         <div className="bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 text-white p-8 rounded-2xl shadow-lg mb-10">
@@ -171,9 +157,9 @@ const UserDetails = () => {
         {/* === Editable Form === */}
         <form
           onSubmit={handleSubmit}
-          className="bg-gradient-to-br from-white via-purple-100 to-pink-50 rounded-2xl shadow-2xl p-8 space-y-6 border border-purple-200 w-full max-w-2xl mx-auto"
+          className="bg-gradient-to-br from-white via-purple-100 to-pink-50 dark:from-gray-800 dark:via-gray-700 dark:to-gray-600 rounded-2xl shadow-2xl p-8 space-y-6 border border-purple-200 dark:border-gray-600 w-full max-w-2xl mx-auto"
         >
-          <h3 className="text-2xl font-bold text-purple-900 mb-4">
+          <h3 className="text-2xl font-bold text-purple-900 dark:text-purple-300 mb-4">
             Edit Your Info
           </h3>
 
@@ -181,7 +167,7 @@ const UserDetails = () => {
           <div>
             <label
               htmlFor="name"
-              className="block text-sm font-medium text-purple-700 mb-1"
+              className="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-1"
             >
               Name
             </label>
@@ -191,7 +177,7 @@ const UserDetails = () => {
               value={userData.username || ""}
               onChange={handleChange}
               placeholder="Name"
-              className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400"
+              className="w-full p-3 border border-purple-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-400 dark:focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
             />
           </div>
 
@@ -199,7 +185,7 @@ const UserDetails = () => {
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-purple-700 mb-1"
+              className="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-1"
             >
               Email
             </label>
@@ -209,7 +195,7 @@ const UserDetails = () => {
               value={userData.email || ""}
               onChange={handleChange}
               placeholder="Email"
-              className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400"
+              className="w-full p-3 border border-purple-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-400 dark:focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
             />
           </div>
 
@@ -217,7 +203,7 @@ const UserDetails = () => {
           <div>
             <label
               htmlFor="college"
-              className="block text-sm font-medium text-purple-700 mb-1"
+              className="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-1"
             >
               College
             </label>
@@ -227,7 +213,7 @@ const UserDetails = () => {
               value={userData.college || ""}
               onChange={handleChange}
               placeholder="College"
-              className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400"
+              className="w-full p-3 border border-purple-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-400 dark:focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
             />
           </div>
 
@@ -235,7 +221,7 @@ const UserDetails = () => {
           <div>
             <label
               htmlFor="company"
-              className="block text-sm font-medium text-purple-700 mb-1"
+              className="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-1"
             >
               Company
             </label>
@@ -245,7 +231,7 @@ const UserDetails = () => {
               value={userData.company || ""}
               onChange={handleChange}
               placeholder="Company"
-              className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400"
+              className="w-full p-3 border border-purple-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-400 dark:focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
             />
           </div>
 
@@ -253,7 +239,7 @@ const UserDetails = () => {
           <div>
             <label
               htmlFor="profession"
-              className="block text-sm font-medium text-purple-700 mb-1"
+              className="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-1"
             >
               Profession
             </label>
@@ -263,7 +249,7 @@ const UserDetails = () => {
               value={userData.profession || ""}
               onChange={handleChange}
               placeholder="Profession"
-              className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400"
+              className="w-full p-3 border border-purple-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-400 dark:focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
             />
           </div>
 
@@ -271,7 +257,7 @@ const UserDetails = () => {
           <div>
             <label
               htmlFor="description"
-              className="block text-sm font-medium text-purple-700 mb-1"
+              className="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-1"
             >
               Description
             </label>
@@ -281,7 +267,7 @@ const UserDetails = () => {
               value={userData.description || ""}
               onChange={handleChange}
               placeholder="Write about yourself"
-              className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400"
+              className="w-full p-3 border border-purple-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-400 dark:focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               rows={4}
             />
           </div>

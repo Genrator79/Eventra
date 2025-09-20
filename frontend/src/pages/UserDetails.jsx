@@ -112,13 +112,6 @@ const UserDetails = () => {
 
   return (
     <div className="min-h-screen p-6 bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100">
-      {/* Debug Section - Remove this after testing */}
-      <div className="mb-4 p-4 bg-yellow-100 border border-yellow-400 rounded-lg">
-        <h4 className="font-bold text-yellow-800">Debug Info:</h4>
-        <pre className="text-xs text-yellow-700 mt-2">
-          {JSON.stringify(userData, null, 2)}
-        </pre>
-      </div>
       <div className="w-full mx-auto">
         {/* === Current Details Card === */}
         <div className="bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 text-white p-8 rounded-2xl shadow-lg mb-10">

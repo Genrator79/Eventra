@@ -42,11 +42,21 @@ const UserDetails = () => {
         const response = await userAPI.getProfile(token);
 
         if (response.ok) {
-          setUserData(response.data.user);
+          console.log("User data received:", response.data.user);
+          const user = response.data.user;
+          setUserData({
+            username: user.username || "",
+            email: user.email || "",
+            college: user.college || "",
+            company: user.company || "",
+            profession: user.profession || "",
+            description: user.description || "",
+          });
         } else {
           toast.error(response.data?.message || "Failed to load user info");
         }
       } catch (err) {
+        console.error("Error fetching profile:", err);
         toast.error("Error fetching profile");
       } finally {
         setDataLoading(false);
@@ -98,8 +108,17 @@ const UserDetails = () => {
     );
   }
 
+  console.log("Current userData state:", userData);
+
   return (
     <div className="min-h-screen p-6 bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100">
+      {/* Debug Section - Remove this after testing */}
+      <div className="mb-4 p-4 bg-yellow-100 border border-yellow-400 rounded-lg">
+        <h4 className="font-bold text-yellow-800">Debug Info:</h4>
+        <pre className="text-xs text-yellow-700 mt-2">
+          {JSON.stringify(userData, null, 2)}
+        </pre>
+      </div>
       <div className="w-full mx-auto">
         {/* === Current Details Card === */}
         <div className="bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 text-white p-8 rounded-2xl shadow-lg mb-10">
@@ -169,7 +188,7 @@ const UserDetails = () => {
             <input
               id="name"
               name="username"
-              value={userData.username}
+              value={userData.username || ""}
               onChange={handleChange}
               placeholder="Name"
               className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400"
@@ -187,7 +206,7 @@ const UserDetails = () => {
             <input
               id="email"
               name="email"
-              value={userData.email}
+              value={userData.email || ""}
               onChange={handleChange}
               placeholder="Email"
               className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400"
@@ -205,7 +224,7 @@ const UserDetails = () => {
             <input
               id="college"
               name="college"
-              value={userData.college}
+              value={userData.college || ""}
               onChange={handleChange}
               placeholder="College"
               className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400"
@@ -223,7 +242,7 @@ const UserDetails = () => {
             <input
               id="company"
               name="company"
-              value={userData.company}
+              value={userData.company || ""}
               onChange={handleChange}
               placeholder="Company"
               className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400"
@@ -241,7 +260,7 @@ const UserDetails = () => {
             <input
               id="profession"
               name="profession"
-              value={userData.profession}
+              value={userData.profession || ""}
               onChange={handleChange}
               placeholder="Profession"
               className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400"
@@ -259,7 +278,7 @@ const UserDetails = () => {
             <textarea
               id="description"
               name="description"
-              value={userData.description}
+              value={userData.description || ""}
               onChange={handleChange}
               placeholder="Write about yourself"
               className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400"

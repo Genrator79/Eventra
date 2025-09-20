@@ -4,7 +4,7 @@ import { FiHome, FiMenu, FiX, FiUser, FiLogOut } from "react-icons/fi";
 import { LuCalendarDays } from "react-icons/lu";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import { FiEdit } from "react-icons/fi";
-import { Sparkles, Bell, Settings, Sun, Moon } from "lucide-react";
+import { Sparkles, Settings, Sun, Moon } from "lucide-react";
 import { toast } from "sonner";
 import { useTheme } from "../contexts/ThemeContext";
 
@@ -130,12 +130,6 @@ const Navbar = () => {
 
             {auth && userInfo ? (
               <>
-                {/* Notifications */}
-                <button className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative">
-                  <Bell className="w-5 h-5" />
-                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
-                </button>
-
                 {/* User Profile Dropdown */}
                 <div className="flex items-center space-x-3">
                   <div className="hidden sm:flex items-center space-x-2">

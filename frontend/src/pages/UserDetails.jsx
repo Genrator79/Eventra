@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { userAPI } from "../config/api";
 
 import {
   FaUser,
@@ -35,18 +36,12 @@ const UserDetails = () => {
       }
       console.log("TOKEN:", token);
       try {
-        const res = await fetch("https://eventra-backend-lsy8.onrender.com/api/user/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await userAPI.getProfile(token);
 
-        const data = await res.json();
-
-        if (res.ok) {
-          setUserData(data.user);
+        if (response.ok) {
+          setUserData(response.data.user);
         } else {
-          toast.error(data?.message || "Failed to load user info");
+          toast.error(response.data?.message || "Failed to load user info");
         }
       } catch (err) {
         toast.error("Error fetching profile");
@@ -72,22 +67,14 @@ const UserDetails = () => {
     }
 
     try {
-      const res = await fetch("https://eventra-backend-lsy8.onrender.com/api/user/me/update", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(userData),
-      });
+      const response = await userAPI.updateProfile(userData, token);
 
-      const result = await res.json();
-
-      if (!res.ok) {
-        toast.error(result.message || "Failed to update user details", {duration : 1000});
+      if (!response.ok) {
+        toast.error(response.data.message || "Failed to update user details", {duration : 1000});
+      } else {
+        toast.success("Profile updated successfully!", { duration: 2500 });
+        console.log("Server response:", response.data);
       }
-      toast.success("Profile updated successfully!", { duration: 2500 });
-      console.log("Server response:", result);
     } 
     catch (error) {
       toast.error(error.message || "Failed to update user details");

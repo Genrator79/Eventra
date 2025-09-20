@@ -4,6 +4,7 @@ import login from "../assets/login.png";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { jwtDecode } from "jwt-decode";
+import { authAPI } from "../config/api";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -17,20 +18,11 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("https://eventra-backend-lsy8.onrender.com/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await authAPI.login(email, password);
 
-      const data = await res.json();
-
-      if (res.ok && data.accessToken) {
-        localStorage.setItem("token", data.accessToken);
-        const decoded = jwtDecode(data.accessToken);
-        console.log(decoded);//check
+      if (response.ok && response.data.accessToken) {
+        localStorage.setItem("token", response.data.accessToken);
+        const decoded = jwtDecode(response.data.accessToken);
         localStorage.setItem(
           "userInfo",
           JSON.stringify({
@@ -39,14 +31,13 @@ const Login = () => {
           })
         );
         toast.success("Login Successful!!!", { duration: 800 });
-        setTimeout(() => navigate("/"), 500); // Redirect to home page after successful login
+        setTimeout(() => navigate("/"), 500);
       } else {
-        toast.error(data?.message || "Invalid email or password");
+        toast.error(response.data?.message || "Invalid email or password");
       }
     } catch (err) {
       console.log(err.message);
       toast.error("Login Error");
-      // show toast or error message to user
     } finally {
       setLoading(false);
     }

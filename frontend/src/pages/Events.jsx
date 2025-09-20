@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Card from "../components/Card";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { eventsAPI } from "../config/api";
 
 
 const Events = () => {
@@ -15,34 +16,28 @@ const Events = () => {
 
     const fetchEvents = async()=>{
       const token = localStorage.getItem("token");
-      console.log(token);
       if(!token){
         navigate("/login");
         return toast.error("Unauthorized user. Please login first.",{ duration: 3000 });
       }
 
       try{
-        const res = await fetch("https://eventra-backend-lsy8.onrender.com/api/events",{
-          headers : {
-            Authorization : `Bearer ${token}`,
-          },
-        });
+        const response = await eventsAPI.getAllEvents(token);
         
-        if(res.status ===401){
+        if(response.status === 401){
           localStorage.removeItem("token");
           toast.warning("Session expired. Please login again.",{ duration: 4000 });
           navigate("/login");
           return;
         }
 
-        const data = await res.json();
-
-        if(res.ok){
-          setEvents(data.events);
+        if(response.ok){
+          // Using original backend response format
+          setEvents(response.data.events || []);
           toast.success("Events loaded successfully!",{ duration: 400 });
         }
         else{
-          toast.error("Failed to load events",{ duration: 4000 });
+          toast.error(response.data.message || "Failed to load events",{ duration: 4000 });
         }
       }
       catch(err){

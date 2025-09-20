@@ -4,6 +4,7 @@ import eventImg from "../assets/event-placeholder.png";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useRef } from "react";
+import { userAPI } from "../config/api";
 
 const Profile = () => {
   const didRun = useRef(false);
@@ -23,18 +24,12 @@ const Profile = () => {
       console.log("TOKEN:", token);
 
       try {
-        const res = await fetch("https://eventra-backend-lsy8.onrender.com/api/user/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await userAPI.getProfile(token);
 
-        const data = await res.json();
-
-        if (res.ok) {
-          setUser(data.user);
+        if (response.ok) {
+          setUser(response.data.user);
         } else {
-          toast.error(data?.message || "Failed to load user info");
+          toast.error(response.data?.message || "Failed to load user info");
         }
       } catch (err) {
         toast.error("Error fetching profile");

@@ -3,6 +3,7 @@ import Card from "../components/Card";
 import SerEventCat from "../components/SerEventCat";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { eventsAPI } from "../config/api";
 
 const Home = () => {
   const [allEvents, setAllEvents] = useState([]);
@@ -13,14 +14,13 @@ const Home = () => {
     didRun.current=true;
     const fetchEvents = async () => {
       try {
-        const res = await fetch("https://eventra-backend-lsy8.onrender.com/api/events/featured");
+        const response = await eventsAPI.getFeaturedEvents();
 
-        const data = await res.json();
-
-        if (res.ok) {
-          setAllEvents(data.events);
+        if (response.ok) {
+          // Using original backend response format
+          setAllEvents(response.data.events || []);
         } else {
-          toast.error("Failed to load Featured events, Try Again", {
+          toast.error(response.data.message || "Failed to load Featured events, Try Again", {
             duration: 4000,
           });
         }

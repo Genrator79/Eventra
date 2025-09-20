@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { FaCheckCircle, FaCalendarAlt, FaMapMarkerAlt, FaMoneyBillWave } from "react-icons/fa";
+import { eventsAPI } from "../config/api";
 
 const Registration = () => {
   const { eventId } = useParams();
@@ -21,13 +22,9 @@ const Registration = () => {
     }
     const getEvents = async () => {
       try {
-        const res = await fetch("https://eventra-backend-lsy8.onrender.com/api/events", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await eventsAPI.getAllEvents(token);
 
-        if (res.status === 401) {
+        if (response.status === 401) {
           localStorage.removeItem("token");
           toast.warning("Session expired. Please login again.", {
             duration: 4000,
@@ -35,13 +32,12 @@ const Registration = () => {
           navigate("/login");
           return;
         }
-        const data = await res.json();
 
-        if (res.ok) {
-          console.log("Fetched events:", data.events);
-          setEvents(data.events);
+        if (response.ok) {
+          console.log("Fetched events:", response.data.events);
+          setEvents(response.data.events);
         } else {
-          toast.error("Failed to fetch event", { duration: 4000 });
+          toast.error(response.data.message || "Failed to fetch event", { duration: 4000 });
         }
       } catch (err) {
         console.error(err);

@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import register from "../assets/register.avif";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import {jwtDecode} from "jwt-decode"
+import {jwtDecode} from "jwt-decode";
+import { authAPI } from "../config/api";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -17,29 +18,17 @@ const Register = () => {
     setLoading(true);
 
     try {
-      const res = await fetch(
-        "https://eventra-backend-lsy8.onrender.com/api/auth/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, email, password }),
-        }
-      );
+      const response = await authAPI.register(username, email, password);
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        return toast.error(data.message || "Error in Registration", {
+      if (!response.ok) {
+        return toast.error(response.data.message || "Error in Registration", {
           duration: 3000,
         });
       }
 
-      if (data.accessToken) {
-        localStorage.setItem("token", data.accessToken);
-        const decoded = jwtDecode(data.accessToken);
-        console.log(decoded); //check
+      if (response.data.accessToken) {
+        localStorage.setItem("token", response.data.accessToken);
+        const decoded = jwtDecode(response.data.accessToken);
         localStorage.setItem(
           "userInfo",
           JSON.stringify({
@@ -50,12 +39,11 @@ const Register = () => {
         toast.success("Registration successful!", { duration: 1000 });
         setTimeout(() => navigate("/"), 500);
       } else {
-        toast.error(data?.message || "Invalid email or password");
+        toast.error(response.data?.message || "Registration failed");
         return;
       }
     } catch (err) {
       toast.error("Something went wrong! Please try again", { duration: 3000 });
-      // show toast or error message to user
     } finally {
       setLoading(false);
     }

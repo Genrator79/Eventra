@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { eventsAPI } from "../config/api";
 
 const AddEventForm = () => {
   const navigate = useNavigate();
@@ -67,21 +68,13 @@ const AddEventForm = () => {
       });
     }
     try {
-      const res = await fetch("https://eventra-backend-lsy8.onrender.com/api/events/add", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await eventsAPI.addEvent(formData, token);
 
-      if (!res.ok) {
-        return toast.error("Failed to add event");
+      if (!response.ok) {
+        return toast.error(response.data.message || "Failed to add event");
       }
 
-      const data = await res.json();
-      toast.success("Event added successfully:",{duration:3000});
+      toast.success("Event added successfully!",{duration:3000});
 
       setFormData({
       title: "",

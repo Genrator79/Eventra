@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { CalendarDays, Clock, MapPin, Users, IndianRupee } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { eventsAPI } from "../config/api";
 
 const EventDescription = () => {
   const { id } = useParams();
@@ -22,13 +23,9 @@ const EventDescription = () => {
     }
     const getEvents = async () => {
       try {
-        const res = await fetch("https://eventra-backend-lsy8.onrender.com/api/events", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await eventsAPI.getAllEvents(token);
 
-        if (res.status === 401) {
+        if (response.status === 401) {
           localStorage.removeItem("token");
           toast.warning("Session expired. Please login again.", {
             duration: 4000,
@@ -36,12 +33,11 @@ const EventDescription = () => {
           navigate("/login");
           return;
         }
-        const data = await res.json();
 
-        if (res.ok) {
-          setEvents(data.events);
+        if (response.ok) {
+          setEvents(response.data.events);
         } else {
-          toast.error("Failed to load events", { duration: 4000 });
+          toast.error(response.data.message || "Failed to load events", { duration: 4000 });
         }
       } catch (err) {
         console.error(err);

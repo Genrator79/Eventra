@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { FaCheckCircle, FaCalendarAlt, FaMapMarkerAlt, FaMoneyBillWave } from "react-icons/fa";
 import { eventsAPI } from "../config/api";
+import LoadingSpinner from "../components/LoadingSpinner";
+import { toast } from "sonner";
 
 const Registration = () => {
   const { eventId } = useParams();
@@ -9,6 +11,7 @@ const Registration = () => {
 
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
   const didRun = useRef(false);
 
   useEffect(() => {
@@ -22,6 +25,7 @@ const Registration = () => {
     }
     const getEvents = async () => {
       try {
+        setLoading(true);
         const response = await eventsAPI.getAllEvents(token);
 
         if (response.status === 401) {
@@ -42,6 +46,8 @@ const Registration = () => {
       } catch (err) {
         console.error(err);
         toast.warning("Error fetching event detail", { duration: 4000 });
+      } finally {
+        setLoading(false);
       }
     };
     getEvents();
@@ -49,6 +55,14 @@ const Registration = () => {
 
   const event = events.find((e) => e._id === eventId);
   console.log(event);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-[#fbe4ff] via-[#e0f7ff] to-[#fff5e4]">
+        <LoadingSpinner size="large" text="Loading event details..." />
+      </div>
+    );
+  }
 
   return (
   <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-[#fbe4ff] via-[#e0f7ff] to-[#fff5e4] text-center px-6 py-20 relative overflow-hidden">

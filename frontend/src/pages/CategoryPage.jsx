@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import Card from "../components/Card"; // assuming you have a reusable Card component
+import LoadingSpinner, { CardSkeleton } from "../components/LoadingSpinner";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { eventsAPI } from "../config/api";
@@ -10,6 +11,7 @@ const CategoryPage = () => {
   const didRun =useRef(false);
 
   const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
   
   useEffect(() => {
     if (didRun.current) return;
@@ -22,6 +24,7 @@ const CategoryPage = () => {
     }
     const getEvents = async () => {
       try {
+        setLoading(true);
         const response = await eventsAPI.getAllEvents(token);
 
         if (response.status === 401) {
@@ -41,6 +44,8 @@ const CategoryPage = () => {
       } catch (err) {
         console.error(err);
         toast.warning("Error fetching event detail", { duration: 4000 });
+      } finally {
+        setLoading(false);
       }
     };
     getEvents();
@@ -57,7 +62,9 @@ const CategoryPage = () => {
         {category} Events
       </h2>
 
-      {filteredEvents.length > 0 ? (
+      {loading ? (
+        <CardSkeleton count={4} />
+      ) : filteredEvents.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-9">
           {filteredEvents.map((event) => (
             <Card key={event.id} event={event} />

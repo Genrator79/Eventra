@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { userAPI } from "../config/api";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 import {
   FaUser,
@@ -13,6 +14,7 @@ import {
 
 const UserDetails = () => {
   const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(true);
   const navigate = useNavigate();
   const [userData, setUserData] = useState({
     username: "",
@@ -36,6 +38,7 @@ const UserDetails = () => {
       }
       console.log("TOKEN:", token);
       try {
+        setDataLoading(true);
         const response = await userAPI.getProfile(token);
 
         if (response.ok) {
@@ -45,6 +48,8 @@ const UserDetails = () => {
         }
       } catch (err) {
         toast.error("Error fetching profile");
+      } finally {
+        setDataLoading(false);
       }
     };
     fetchUser();
@@ -84,6 +89,14 @@ const UserDetails = () => {
       setLoading(false);
     }
   };
+
+  if (dataLoading) {
+    return (
+      <div className="min-h-screen p-6 bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100 flex items-center justify-center">
+        <LoadingSpinner size="large" text="Loading user profile..." />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen p-6 bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100">

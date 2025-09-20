@@ -3,12 +3,14 @@ import { CalendarDays, Clock, MapPin, Users, IndianRupee } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { eventsAPI } from "../config/api";
+import LoadingSpinner from "./LoadingSpinner";
 
 const EventDescription = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const didRun = useRef(false);
   const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(true);
 
   const [events, setEvents] = useState([]);
 
@@ -23,6 +25,7 @@ const EventDescription = () => {
     }
     const getEvents = async () => {
       try {
+        setDataLoading(true);
         const response = await eventsAPI.getAllEvents(token);
 
         if (response.status === 401) {
@@ -42,12 +45,24 @@ const EventDescription = () => {
       } catch (err) {
         console.error(err);
         toast.warning("Error fetching event detail", { duration: 4000 });
+      } finally {
+        setDataLoading(false);
       }
     };
     getEvents();
   }, [navigate]);
 
   const event = events.find((e) => e._id === id);
+
+  if (dataLoading) {
+    return (
+      <div className="max-w-5xl mx-auto px-6 py-10">
+        <div className="flex flex-col items-center justify-center space-y-6">
+          <LoadingSpinner size="large" text="Loading event details..." />
+        </div>
+      </div>
+    );
+  }
 
   if (!event)
     return <p className="text-center text-red-600 mt-10">Event not found</p>;

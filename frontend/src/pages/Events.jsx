@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Card from "../components/Card";
+import LoadingSpinner, { CardSkeleton } from "../components/LoadingSpinner";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { eventsAPI } from "../config/api";
@@ -7,6 +8,7 @@ import { eventsAPI } from "../config/api";
 
 const Events = () => {
   const [events, setEvents] =useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const didRun = useRef(false);
   
@@ -22,6 +24,7 @@ const Events = () => {
       }
 
       try{
+        setLoading(true);
         const response = await eventsAPI.getAllEvents(token);
         
         if(response.status === 401){
@@ -43,6 +46,8 @@ const Events = () => {
       catch(err){
         console.error(err);
         toast.warning("Error fetching events",{ duration: 4000 });
+      } finally {
+        setLoading(false);
       }
     }
     fetchEvents();
@@ -64,7 +69,21 @@ const Events = () => {
 
       {/* Events Section */}
       <div className="max-w-7xl mx-auto px-4 py-16">
-        {events.length > 0 ? (
+        {loading ? (
+          <>
+            <div className="flex items-center justify-between mb-12">
+              <div>
+                <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded w-48 mb-2 animate-pulse"></div>
+                <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-64 animate-pulse"></div>
+              </div>
+              <div className="hidden md:flex items-center gap-4">
+                <div className="h-10 bg-gray-300 dark:bg-gray-700 rounded w-16 animate-pulse"></div>
+                <div className="h-10 bg-gray-300 dark:bg-gray-700 rounded w-16 animate-pulse"></div>
+              </div>
+            </div>
+            <CardSkeleton count={8} />
+          </>
+        ) : events.length > 0 ? (
           <>
             <div className="flex items-center justify-between mb-12">
               <div>

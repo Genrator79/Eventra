@@ -1,12 +1,14 @@
 import Hero from "../components/Hero";
 import Card from "../components/Card";
 import SerEventCat from "../components/SerEventCat";
+import LoadingSpinner, { CardSkeleton } from "../components/LoadingSpinner";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { eventsAPI } from "../config/api";
 
 const Home = () => {
   const [allEvents, setAllEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
   const didRun = useRef(false);
 
   useEffect(() => {
@@ -14,6 +16,7 @@ const Home = () => {
     didRun.current=true;
     const fetchEvents = async () => {
       try {
+        setLoading(true);
         const response = await eventsAPI.getFeaturedEvents();
 
         if (response.ok) {
@@ -27,6 +30,8 @@ const Home = () => {
       } catch (err) {
         console.error(err);
         toast.warning("Error fetching events", { duration: 4000 });
+      } finally {
+        setLoading(false);
       }
     };
     fetchEvents();
@@ -54,7 +59,9 @@ const Home = () => {
         </div>
 
         {/* Events Grid */}
-        {filteredEvents.length > 0 ? (
+        {loading ? (
+          <CardSkeleton count={4} />
+        ) : filteredEvents.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {filteredEvents.map((event, index) => (
               <div

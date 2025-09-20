@@ -5,10 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useRef } from "react";
 import { userAPI } from "../config/api";
+import { ProfileSkeleton } from "../components/LoadingSpinner";
 
 const Profile = () => {
   const didRun = useRef(false);
   const [user, setUser] = useState({});
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,6 +26,7 @@ const Profile = () => {
       console.log("TOKEN:", token);
 
       try {
+        setLoading(true);
         const response = await userAPI.getProfile(token);
 
         if (response.ok) {
@@ -33,6 +36,8 @@ const Profile = () => {
         }
       } catch (err) {
         toast.error("Error fetching profile");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -72,6 +77,10 @@ const Profile = () => {
       image: eventImg,
     },
   ]);
+
+  if (loading) {
+    return <ProfileSkeleton />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#ECE4F2] via-[#EADCF5] to-[#D7C9E6] py-12 px-6">

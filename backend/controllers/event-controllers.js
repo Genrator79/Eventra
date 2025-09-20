@@ -15,9 +15,9 @@ const getAllEvents = async (req, res) => {
       filter.category = req.query.category;
     }
     
-    // Filter by featured if provided
+    // Filter by featured if provided (accepts true/false, 1/0)
     if (req.query.featured !== undefined) {
-      filter.isFeatured = req.query.featured === 'true';
+      filter.isFeatured = ['true', '1'].includes(req.query.featured);
     }
     
     // Search by title if provided
@@ -36,7 +36,7 @@ const getAllEvents = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: events,
+      events, // <-- consistent key
       pagination: {
         page,
         limit,
@@ -61,8 +61,14 @@ const addEvent = async (req, res) => {
     const eventData = req.body;
 
     // Input validation
-    const requiredFields = ['title', 'description', 'date', 'location', 'price', 'capacity', 'imageUrl', 'category'];
-    const missingFields = requiredFields.filter(field => !eventData[field]);
+    const requiredFields = [
+      'title', 'description', 'date', 'location',
+      'price', 'capacity', 'imageUrl', 'category'
+    ];
+
+    const missingFields = requiredFields.filter(field =>
+      eventData[field] === undefined || eventData[field] === null || eventData[field] === ""
+    );
     
     if (missingFields.length > 0) {
       return res.status(400).json({
@@ -101,7 +107,7 @@ const addEvent = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Event created successfully",
-      data: savedEvent,
+      event: savedEvent, // <-- consistent key
     });
   } catch (err) {
     console.error("Error saving event:", err);
@@ -146,7 +152,7 @@ const getEventById = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: event,
+      event, // <-- consistent key
       message: "Event fetched successfully",
     });
   } catch (error) {
@@ -186,7 +192,7 @@ const updateEvent = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: event,
+      event, // <-- consistent key
       message: "Event updated successfully",
     });
   } catch (error) {

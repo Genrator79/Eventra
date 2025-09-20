@@ -4,7 +4,7 @@ import { FiHome, FiMenu, FiX, FiUser, FiLogOut } from "react-icons/fi";
 import { LuCalendarDays } from "react-icons/lu";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import { FiEdit } from "react-icons/fi";
-import { Sparkles, Settings, Sun, Moon } from "lucide-react";
+import { Sparkles, Sun, Moon } from "lucide-react";
 import { toast } from "sonner";
 import { useTheme } from "../contexts/ThemeContext";
 
@@ -138,40 +138,15 @@ const Navbar = () => {
                     </span>
                   </div>
                   
-                  <div className="relative group">
-                    <button
-                      onClick={handleClick}
-                      className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 text-white flex items-center justify-center font-bold text-sm">
-                        {userInfo.username[0].toUpperCase()}
-                      </div>
-                      <FiUser className="w-4 h-4 text-gray-600" />
-                    </button>
-                    
-                    {/* Dropdown Menu */}
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                      <button
-                        onClick={handleClick}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                      >
-                        <FiUser className="w-4 h-4" />
-                        {userInfo.role === "admin" ? "Admin Panel" : "My Profile"}
-                      </button>
-                      <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
-                        <Settings className="w-4 h-4" />
-                        Settings
-                      </button>
-                      <hr className="my-2" />
-                      <button
-                        onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
-                      >
-                        <FiLogOut className="w-4 h-4" />
-                        Logout
-                      </button>
+                  <button
+                    onClick={handleClick}
+                    className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 text-white flex items-center justify-center font-bold text-sm">
+                      {userInfo.username[0].toUpperCase()}
                     </div>
-                  </div>
+                    <FiUser className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                  </button>
                 </div>
               </>
             ) : (

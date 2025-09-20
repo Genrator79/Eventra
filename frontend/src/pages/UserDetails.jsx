@@ -104,7 +104,7 @@ const UserDetails = () => {
   }
 
   return (
-    <div className="min-h-screen p-6 bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900">
+    <div className="min-h-screen p-6 bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100">
       <div className="w-full mx-auto">
         {/* === Current Details Card === */}
         <div className="bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 text-white p-8 rounded-2xl shadow-lg mb-10">
@@ -157,9 +157,9 @@ const UserDetails = () => {
         {/* === Editable Form === */}
         <form
           onSubmit={handleSubmit}
-          className="bg-gradient-to-br from-white via-purple-100 to-pink-50 dark:from-gray-800 dark:via-gray-700 dark:to-gray-600 rounded-2xl shadow-2xl p-8 space-y-6 border border-purple-200 dark:border-gray-600 w-full max-w-2xl mx-auto"
+          className="bg-gradient-to-br from-white via-purple-100 to-pink-50 rounded-2xl shadow-2xl p-8 space-y-6 border border-purple-200 w-full max-w-2xl mx-auto"
         >
-          <h3 className="text-2xl font-bold text-purple-900 dark:text-purple-300 mb-4">
+          <h3 className="text-2xl font-bold text-purple-900 mb-4">
             Edit Your Info
           </h3>
 
@@ -167,7 +167,7 @@ const UserDetails = () => {
           <div>
             <label
               htmlFor="name"
-              className="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-1"
+              className="block text-sm font-medium text-purple-700 mb-1"
             >
               Name
             </label>
@@ -177,7 +177,7 @@ const UserDetails = () => {
               value={userData.username || ""}
               onChange={handleChange}
               placeholder="Name"
-              className="w-full p-3 border border-purple-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-400 dark:focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+              className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400 bg-white text-gray-900 placeholder-gray-500"
             />
           </div>
 
@@ -185,7 +185,7 @@ const UserDetails = () => {
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-1"
+              className="block text-sm font-medium text-purple-700 mb-1"
             >
               Email
             </label>
@@ -195,7 +195,7 @@ const UserDetails = () => {
               value={userData.email || ""}
               onChange={handleChange}
               placeholder="Email"
-              className="w-full p-3 border border-purple-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-400 dark:focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+              className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400 bg-white text-gray-900 placeholder-gray-500"
             />
           </div>
 
@@ -203,7 +203,7 @@ const UserDetails = () => {
           <div>
             <label
               htmlFor="college"
-              className="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-1"
+              className="block text-sm font-medium text-purple-700 mb-1"
             >
               College
             </label>
@@ -213,7 +213,7 @@ const UserDetails = () => {
               value={userData.college || ""}
               onChange={handleChange}
               placeholder="College"
-              className="w-full p-3 border border-purple-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-400 dark:focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+              className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400 bg-white text-gray-900 placeholder-gray-500"
             />
           </div>
 
@@ -221,7 +221,7 @@ const UserDetails = () => {
           <div>
             <label
               htmlFor="company"
-              className="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-1"
+              className="block text-sm font-medium text-purple-700 mb-1"
             >
               Company
             </label>
@@ -231,7 +231,7 @@ const UserDetails = () => {
               value={userData.company || ""}
               onChange={handleChange}
               placeholder="Company"
-              className="w-full p-3 border border-purple-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-400 dark:focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+              className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400 bg-white text-gray-900 placeholder-gray-500"
             />
           </div>
 
@@ -239,7 +239,7 @@ const UserDetails = () => {
           <div>
             <label
               htmlFor="profession"
-              className="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-1"
+              className="block text-sm font-medium text-purple-700 mb-1"
             >
               Profession
             </label>
@@ -249,7 +249,7 @@ const UserDetails = () => {
               value={userData.profession || ""}
               onChange={handleChange}
               placeholder="Profession"
-              className="w-full p-3 border border-purple-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-400 dark:focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+              className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400 bg-white text-gray-900 placeholder-gray-500"
             />
           </div>
 
@@ -257,7 +257,7 @@ const UserDetails = () => {
           <div>
             <label
               htmlFor="description"
-              className="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-1"
+              className="block text-sm font-medium text-purple-700 mb-1"
             >
               Description
             </label>
@@ -267,7 +267,7 @@ const UserDetails = () => {
               value={userData.description || ""}
               onChange={handleChange}
               placeholder="Write about yourself"
-              className="w-full p-3 border border-purple-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-400 dark:focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+              className="w-full p-3 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400 bg-white text-gray-900 placeholder-gray-500"
               rows={4}
             />
           </div>

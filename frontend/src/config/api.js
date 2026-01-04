@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // API Configuration
-export const API_BASE_URL = "http://localhost:9000";
+export const API_BASE_URL = "https://eventra-backend-lsy8.onrender.com";
 
 // Create Axios instance
 const axiosInstance = axios.create({

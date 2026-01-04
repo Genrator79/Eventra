@@ -8,11 +8,11 @@ import { eventsAPI } from "../config/api";
 const CategoryPage = () => {
   const { category } = useParams();
   const navigate = useNavigate();
-  const didRun =useRef(false);
+  const didRun = useRef(false);
 
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     if (didRun.current) return;
     didRun.current = true;
@@ -25,9 +25,10 @@ const CategoryPage = () => {
     const getEvents = async () => {
       try {
         setLoading(true);
-        const response = await eventsAPI.getAllEvents(token);
-
-        if (response.status === 401) {
+        const response = await eventsAPI.getAllEvents();
+        setEvents(response.data.events);
+      } catch (err) {
+        if (err.response?.status === 401) {
           localStorage.removeItem("token");
           toast.warning("Session expired. Please login again.", {
             duration: 4000,
@@ -35,22 +36,15 @@ const CategoryPage = () => {
           navigate("/login");
           return;
         }
-
-        if (response.ok) {
-          setEvents(response.data.events);
-        } else {
-          toast.error(response.data.message || "Failed to load events", { duration: 4000 });
-        }
-      } catch (err) {
         console.error(err);
-        toast.warning("Error fetching event detail", { duration: 4000 });
+        toast.error(err.response?.data?.message || "Failed to load events", { duration: 4000 });
       } finally {
         setLoading(false);
       }
     };
     getEvents();
   }, [navigate]);
-  
+
   // Convert to lowercase for flexible matching
   const filteredEvents = events.filter(
     (event) => event.category.toLowerCase() === category.toLowerCase()

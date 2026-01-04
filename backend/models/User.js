@@ -26,14 +26,14 @@ const userSchema = new mongoose.Schema({
   },
 
   // ✅ Additional Profile Fields
-  college:     { type: String, default: "" },
-  company:     { type: String, default: "" },
-  profession:  { type: String, default: "" },
+  college: { type: String, default: "" },
+  company: { type: String, default: "" },
+  profession: { type: String, default: "" },
   description: { type: String, default: "" },
 
 }, { timestamps: true });
 
-userSchema.pre("save", async function(next) {
+userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
   const salt = await bcrypt.genSalt(10);
@@ -42,7 +42,7 @@ userSchema.pre("save", async function(next) {
   next();
 });
 
-userSchema.methods.comparePassword = async function(enteredPassword) {
+userSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 

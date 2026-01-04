@@ -14,11 +14,20 @@ const eventSchema = new mongoose.Schema({
     minlength: 10,
     maxlength: 1000,
   },
+  longDescription: {
+    type: String,
+    required: false, // Optional, enables detailed storytelling
+    maxlength: 5000,
+  },
+  gallery: {
+    type: [String], // Array of image URLs
+    default: [],
+  },
   date: {
     type: Date,
     required: true,
     validate: {
-      validator: function(value) {
+      validator: function (value) {
         return value > new Date();
       },
       message: 'Event date must be in the future'
@@ -45,12 +54,6 @@ const eventSchema = new mongoose.Schema({
   imageUrl: {
     type: String,
     required: true,
-    validate: {
-      validator: function(value) {
-        return /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i.test(value);
-      },
-      message: 'Image URL must be a valid image link'
-    }
   },
   isFeatured: {
     type: Boolean,
@@ -71,7 +74,7 @@ const eventSchema = new mongoose.Schema({
     type: [String], // Array of VIP names
     default: [],
     validate: {
-      validator: function(value) {
+      validator: function (value) {
         return value.length <= 10;
       },
       message: 'Maximum 10 VIPs allowed'
@@ -81,7 +84,7 @@ const eventSchema = new mongoose.Schema({
     type: [String], // Array of workshop titles
     default: [],
     validate: {
-      validator: function(value) {
+      validator: function (value) {
         return value.length <= 5;
       },
       message: 'Maximum 5 workshops allowed'
@@ -91,13 +94,23 @@ const eventSchema = new mongoose.Schema({
     type: [String], // Array of company names
     default: [],
     validate: {
-      validator: function(value) {
+      validator: function (value) {
         return value.length <= 10;
       },
       message: 'Maximum 10 companies allowed'
     }
   },
-}, { 
+  status: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending'
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: false // Optional for seeded data, required for app usage
+  }
+}, {
   timestamps: true,
   toJSON: { virtuals: true },
   toObject: { virtuals: true }
@@ -111,7 +124,7 @@ eventSchema.index({ title: 'text', description: 'text' }); // Text search index
 eventSchema.index({ createdAt: -1 }); // For sorting by newest
 
 // Virtual for formatted date
-eventSchema.virtual('formattedDate').get(function() {
+eventSchema.virtual('formattedDate').get(function () {
   return this.date.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -122,7 +135,7 @@ eventSchema.virtual('formattedDate').get(function() {
 });
 
 // Virtual for remaining capacity (if you add registrations later)
-eventSchema.virtual('remainingCapacity').get(function() {
+eventSchema.virtual('remainingCapacity').get(function () {
   // This would be calculated based on actual registrations
   return this.capacity;
 });

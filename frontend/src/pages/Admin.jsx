@@ -1,4 +1,4 @@
-import { use, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   PieChart,
@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { toast } from "sonner";
+import { eventsAPI, userAPI } from "../config/api";
 
 const COLORS = [
   "#8B5CF6", // violet
@@ -19,17 +20,34 @@ const COLORS = [
   "#3B82F6", // blue
   "#10B981", // green
   "#F59E0B", // amber
+  "#EF4444", // red
+  "#6366F1", // indigo
 ];
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const didRun = useRef(false);
 
-  
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    totalEvents: 0,
+    totalCategories: 0,
+    latestEvents: [],
+    featuredEvents: [],
+    pendingEvents: [],
+  });
+
+  const [users, setUsers] = useState([]);
+
+  const [eventCategoryData, setEventCategoryData] = useState([]);
+  const [monthlyData, setMonthlyData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isUsersOpen, setIsUsersOpen] = useState(false);
 
   useEffect(() => {
     if (didRun.current) return;
     didRun.current = true;
+
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("userInfo"));
 
@@ -44,46 +62,105 @@ const AdminDashboard = () => {
       navigate("/", { replace: true });
       return;
     }
-  }, []);
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [eventsRes] = await Promise.all([
+          eventsAPI.getAllEvents(),
+        ]);
+
+        const events = eventsRes.data.events || [];
+
+        // Calculate Stats
+        const totalEvents = events.length;
+
+        // Extract Categories
+        const categories = {};
+        events.forEach((event) => {
+          const cat = event.category || "Uncategorized";
+          categories[cat] = (categories[cat] || 0) + 1;
+        });
+        const totalCategories = Object.keys(categories).length;
+
+        // Prepare Chart Data: Categories
+        const categoryData = Object.keys(categories).map((key) => ({
+          name: key,
+          value: categories[key],
+        }));
+
+        // Prepare Chart Data: Monthly Trends
+        const months = [
+          "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+        ];
+        const monthlyCounts = new Array(12).fill(0);
+
+        events.forEach((event) => {
+          const date = new Date(event.date);
+          if (!isNaN(date)) {
+            monthlyCounts[date.getMonth()]++;
+          }
+        });
+
+        const monthTrendData = months.map((month, index) => ({
+          month,
+          events: monthlyCounts[index],
+        }));
+
+        // Latest & Featured
+        // Sort by date descending
+        const sortedEvents = [...events].sort((a, b) => new Date(b.date) - new Date(a.date));
+        const latestEvents = sortedEvents.slice(0, 5);
+        const featuredEvents = events.filter((e) => e.isFeatured).slice(0, 5);
+
+        setStats({
+          // totalUsers, // Removed
+          totalEvents,
+          totalCategories,
+          featuredEvents,
+          // pendingEvents, // Removed
+        });
+
+        setEventCategoryData(categoryData);
+        setMonthlyData(monthTrendData);
+
+      } catch (error) {
+        console.error("Dashboard fetch error:", error);
+        toast.error("Failed to load dashboard data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [navigate]);
 
   const handleAdd = (e) => {
     navigate("/admin/addevent");
   };
 
-  const stats = {
-    totalUsers: 120,
-    totalEvents: 45,
-    totalCategories: 6,
-    latestEvents: [
-      { id: 1, title: "React Summit", date: "2025-07-21" },
-      { id: 2, title: "Tech Carnival", date: "2025-07-25" },
-      { id: 3, title: "Startup Expo", date: "2025-07-27" },
-      { id: 4, title: "AI Conference", date: "2025-08-01" },
-      { id: 5, title: "Music Mania", date: "2025-08-05" },
-    ],
-    featuredEvents: [
-      { id: 101, title: "Mega Concert", date: "2025-08-15" },
-      { id: 102, title: "Design Workshop", date: "2025-08-18" },
-    ],
+  const handleStatusUpdate = async (id, status) => {
+    try {
+      await eventsAPI.updateEventStatus(id, status);
+      toast.success(`Event ${status} successfully!`);
+      // Refresh details - logic removed as pending events are gone
+    } catch (error) {
+      toast.error("Failed to update status");
+    }
   };
 
-  const eventCategoryData = [
-    { name: "Tech", value: 12 },
-    { name: "Music", value: 8 },
-    { name: "Business", value: 10 },
-    { name: "Education", value: 7 },
-    { name: "Other", value: 8 },
-  ];
+  // handleRoleUpdate removed
 
-  const monthlyData = [
-    { month: "Jan", events: 3 },
-    { month: "Feb", events: 6 },
-    { month: "Mar", events: 4 },
-    { month: "Apr", events: 8 },
-    { month: "May", events: 10 },
-    { month: "Jun", events: 5 },
-    { month: "Jul", events: 9 },
-  ];
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-xl font-semibold text-purple-600 animate-pulse">
+          Loading Dashboard...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#ECE4F2] via-[#EADCF5] to-[#D7C9E6] p-6 space-y-12">
@@ -93,16 +170,7 @@ const AdminDashboard = () => {
 
       {/* Stat Cards */}
       <div className="w-full bg-gradient-to-br from-[#F5F0FF] via-[#F0E7FF] to-[#E6DBFB] py-8 px-6 rounded-xl shadow-inner">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {/* Total Users */}
-          <div className="bg-gradient-to-br from-[#E0F2FF] to-[#CDEBFF] rounded-2xl shadow-md p-6 border-l-[6px] border-sky-500 hover:scale-[1.02] transition-all duration-300">
-            <h2 className="text-md font-semibold text-gray-700 mb-2">
-              👥 Total Users
-            </h2>
-            <p className="text-4xl font-extrabold text-sky-700">
-              {stats.totalUsers}
-            </p>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 
           {/* Total Events */}
           <div className="bg-gradient-to-br from-[#FFE8ED] to-[#FFD5E1] rounded-2xl shadow-md p-6 border-l-[6px] border-rose-400 hover:scale-[1.02] transition-all duration-300">
@@ -227,43 +295,28 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Latest & Featured Events */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Latest Events */}
-        <div className="bg-white shadow-md rounded-xl p-4">
-          <h2 className="text-xl font-semibold text-purple-800 mb-4">
-            Latest Events
-          </h2>
-          <ul className="space-y-2">
-            {stats.latestEvents.map((event) => (
-              <li
-                key={event.id}
-                className="p-3 bg-gray-100 rounded-md shadow-sm flex justify-between"
-              >
-                <span>{event.title}</span>
-                <span className="text-sm text-gray-600">{event.date}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Featured Events */}
-        <div className="bg-white shadow-md rounded-xl p-4">
-          <h2 className="text-xl font-semibold text-purple-800 mb-4">
-            Upcoming Featured Events
-          </h2>
+      {/* Featured Events */}
+      <div className="bg-white shadow-md rounded-xl p-4 mb-8">
+        <h2 className="text-xl font-semibold text-purple-800 mb-4">
+          Featured Events
+        </h2>
+        {stats.featuredEvents?.length > 0 ? (
           <ul className="space-y-2">
             {stats.featuredEvents.map((event) => (
               <li
-                key={event.id}
-                className="p-3 bg-gradient-to-r from-purple-200 to-purple-100 rounded-md shadow"
+                key={event._id}
+                className="p-3 bg-gradient-to-r from-purple-200 to-purple-100 rounded-md shadow flex justify-between"
               >
-                <div className="font-medium">{event.title}</div>
-                <div className="text-sm text-gray-700">{event.date}</div>
+                <div className="font-medium text-purple-900 line-clamp-1">{event.title}</div>
+                <div className="text-sm text-purple-700 whitespace-nowrap ml-2">
+                  {new Date(event.date).toLocaleDateString()}
+                </div>
               </li>
             ))}
           </ul>
-        </div>
+        ) : (
+          <p className="text-gray-500 text-center py-4">No featured events.</p>
+        )}
       </div>
 
       {/* Logout Button */}

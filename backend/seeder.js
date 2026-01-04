@@ -1,19 +1,21 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
-const Event = require("./models/Event")
+const Event = require("./models/Event");
+const User = require("./models/User");
 
 const events = [
   {
     id: 1,
-    title: "React Conference 2024",
+    title: "React Conference 2026",
     description:
       "An immersive experience for React developers covering core concepts, future roadmap, and real-world applications through keynotes and interactive sessions. This event offers unparalleled access to experts and deep learning opportunities through workshops and networking with leading companies.",
-    date: "2024-12-20 09:00:00",
+    date: "2026-12-20 09:00:00",
     location: "San Francisco, CA",
     price: 299.99,
     capacity: 500,
+    status: "approved",
     imageUrl:
-      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=400&fit=crop#.jpg",
     isFeatured: true,
     categoryId: 1,
     category: "Technology",
@@ -26,12 +28,13 @@ const events = [
     title: "AI & Machine Learning Summit",
     description:
       "Dive deep into the world of AI with hands-on workshops and industry insights from leaders in machine learning. Discover the latest trends, models, and frameworks powering the future of intelligent applications.",
-    date: "2024-12-25 10:00:00",
+    date: "2026-12-25 10:00:00",
     location: "Seattle, WA",
     price: 449.99,
     capacity: 300,
+    status: "approved",
     imageUrl:
-      "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&h=400&fit=crop#.jpg",
     isFeatured: true,
     categoryId: 1,
     category: "Technology",
@@ -44,12 +47,13 @@ const events = [
     title: "Startup Pitch Night",
     description:
       "Join a thrilling evening where ambitious founders present their groundbreaking startups to a panel of investors. Expect high-energy pitches, startup stories, and potential unicorns in the making. Network with top VCs and mentors.",
-    date: "2024-12-15 18:00:00",
+    date: "2026-11-15 18:00:00",
     location: "Austin, TX",
     price: 25.0,
     capacity: 200,
+    status: "approved",
     imageUrl:
-      "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=800&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=800&h=400&fit=crop#.jpg",
     isFeatured: false,
     categoryId: 3,
     category: "Business",
@@ -62,12 +66,13 @@ const events = [
     title: "Jazz Festival Downtown",
     description:
       "Celebrate jazz in all its glory with performances from global legends and emerging talents. Soak in the rhythms and join musical workshops led by virtuosos. A cultural feast for jazz lovers and music enthusiasts.",
-    date: "2024-12-22 19:00:00",
+    date: "2026-10-22 19:00:00",
     location: "New Orleans, LA",
     price: 75.0,
     capacity: 800,
+    status: "approved",
     imageUrl:
-      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&h=400&fit=crop#.jpg",
     isFeatured: true,
     categoryId: 2,
     category: "Music",
@@ -84,12 +89,13 @@ const events = [
     title: "Electronic Music Festival",
     description:
       "A night of pulsating beats and high-octane energy featuring top global DJs and immersive visual experiences. Get ready to dance till dawn! Experience the best of EDM culture in one place.",
-    date: "2024-12-30 20:00:00",
+    date: "2026-09-30 20:00:00",
     location: "Miami, FL",
     price: 125.0,
     capacity: 1000,
+    status: "approved",
     imageUrl:
-      "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&h=400&fit=crop#.jpg",
     isFeatured: false,
     categoryId: 2,
     category: "Music",
@@ -102,12 +108,13 @@ const events = [
     title: "Marathon Training Workshop",
     description:
       "Prepare like a pro with our comprehensive training event. From injury prevention to meal planning, everything you need to run your best race. Includes sessions from world-class marathoners.",
-    date: "2024-12-18 07:00:00",
+    date: "2026-08-18 07:00:00",
     location: "Central Park, NY",
     price: 45.0,
     capacity: 50,
+    status: "approved",
     imageUrl:
-      "https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=800&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=800&h=400&fit=crop#.jpg",
     isFeatured: false,
     categoryId: 4,
     category: "Sports",
@@ -123,12 +130,13 @@ const events = [
     title: "Yoga & Wellness Retreat",
     description:
       "Unplug and reconnect with nature and yourself at our rejuvenating retreat. Enjoy yoga sessions, mindfulness workshops, and holistic healing from expert practitioners.",
-    date: "2024-12-28 08:00:00",
+    date: "2026-07-28 08:00:00",
     location: "Sedona, AZ",
     price: 199.99,
     capacity: 75,
+    status: "approved",
     imageUrl:
-      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=400&fit=crop#.jpg",
     isFeatured: false,
     categoryId: 4,
     category: "Sports",
@@ -141,12 +149,13 @@ const events = [
     title: "Modern Art Exhibition",
     description:
       "Explore bold, thought-provoking contemporary art from around the globe. Guided tours and creative sessions with artists included, making it a must-see for art lovers and collectors.",
-    date: "2024-12-16 14:00:00",
+    date: "2026-11-16 14:00:00",
     location: "Chelsea, NY",
     price: 35.0,
     capacity: 150,
+    status: "approved",
     imageUrl:
-      "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&h=400&fit=crop#.jpg",
     isFeatured: false,
     categoryId: 5,
     category: "Art",
@@ -159,12 +168,13 @@ const events = [
     title: "Digital Art Workshop",
     description:
       "Master the digital canvas with guided workshops on illustration, character design, and digital painting using professional tools and software.",
-    date: "2024-12-21 10:00:00",
+    date: "2026-10-21 10:00:00",
     location: "Portland, OR",
     price: 89.99,
     capacity: 30,
+    status: "approved",
     imageUrl:
-      "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=800&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=800&h=400&fit=crop#.jpg",
     isFeatured: false,
     categoryId: 5,
     category: "Art",
@@ -180,12 +190,13 @@ const events = [
     title: "Wine Tasting Evening",
     description:
       "A refined evening with curated wine selections from top vineyards, expert-led tastings, and gourmet pairings in a serene setting. Perfect for wine aficionados and novices alike.",
-    date: "2024-12-19 17:00:00",
+    date: "2026-09-19 17:00:00",
     location: "Napa Valley, CA",
     price: 125.0,
     capacity: 60,
+    status: "approved",
     imageUrl:
-      "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&h=400&fit=crop#.jpg",
     isFeatured: false,
     categoryId: 6,
     category: "Food",
@@ -200,7 +211,7 @@ async function seedEvents() {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("MongoDB connected seeder !!!");
 
-    // Optional: clear existing events before seeding
+    // Clear existing events
     await Event.deleteMany({});
     console.log("Cleared existing events");
 
@@ -208,8 +219,30 @@ async function seedEvents() {
     await Event.insertMany(events);
     console.log("Seeded all events successfully");
 
+    // Seed Admin User
+    const adminEmail = "abhijeet@gmail.com";
+    const existingAdmin = await User.findOne({ email: adminEmail });
+
+    if (!existingAdmin) {
+      const adminUser = new User({
+        username: "Abhijeet Admin",
+        email: adminEmail,
+        password: "12345678", // Will be hashed by pre-save hook
+        role: "admin",
+        profession: "System Administrator",
+        description: "Main administrator account for Eventra."
+      });
+      await adminUser.save();
+      console.log("Admin user (abhijeet@gmail.com) created successfully");
+    } else {
+      console.log("Admin user already exists");
+    }
+
+    process.exit(0);
+
   } catch (error) {
-    console.error("Error seeding events:", error);
+    console.error("Error seeding database:", error);
+    process.exit(1);
   }
 }
 

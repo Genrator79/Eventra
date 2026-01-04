@@ -28,7 +28,7 @@ const UserDetails = () => {
   const didRun = useRef(false);
 
   useEffect(() => {
-    if(didRun.current) return;
+    if (didRun.current) return;
     didRun.current = true;
     const fetchUser = async () => {
       const token = localStorage.getItem("token");
@@ -38,23 +38,18 @@ const UserDetails = () => {
       }
       try {
         setDataLoading(true);
-        const response = await userAPI.getProfile(token);
-
-        if (response.ok) {
-          const user = response.data.user;
-          setUserData({
-            username: user.username || "",
-            email: user.email || "",
-            college: user.college || "",
-            company: user.company || "",
-            profession: user.profession || "",
-            description: user.description || "",
-          });
-        } else {
-          toast.error(response.data?.message || "Failed to load user info");
-        }
+        const response = await userAPI.getProfile();
+        const user = response.data.user;
+        setUserData({
+          username: user.username || "",
+          email: user.email || "",
+          college: user.college || "",
+          company: user.company || "",
+          profession: user.profession || "",
+          description: user.description || "",
+        });
       } catch (err) {
-        toast.error("Error fetching profile");
+        toast.error(err.response?.data?.message || "Failed to load user info");
       } finally {
         setDataLoading(false);
       }
@@ -79,17 +74,12 @@ const UserDetails = () => {
     }
 
     try {
-      const response = await userAPI.updateProfile(userData, token);
-
-      if (!response.ok) {
-        toast.error(response.data.message || "Failed to update user details", {duration : 1000});
-      } else {
-        toast.success("Profile updated successfully!", { duration: 2500 });
-      }
-    } 
+      await userAPI.updateProfile(userData);
+      toast.success("Profile updated successfully!", { duration: 2500 });
+    }
     catch (error) {
-      toast.error(error.message || "Failed to update user details");
-    } 
+      toast.error(error.response?.data?.message || "Failed to update user details");
+    }
     finally {
       setLoading(false);
     }

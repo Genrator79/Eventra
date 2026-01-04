@@ -16,21 +16,21 @@ const AddEventForm = () => {
     price: "",
     capacity: "",
     imageUrl: "",
-    categoryId: "",
-    category: "",
+    categoryId: 1, // Default valid ID
+    category: "Technology", // Default valid Category
     vips: "",
     workshops: "",
     companies: "",
     isFeatured: false,
   });
 
-  useEffect(()=>{
-    if(didRun.current) return;
+  useEffect(() => {
+    if (didRun.current) return;
     didRun.current = true;
 
     const token = localStorage.getItem("token");
 
-    if(!token){
+    if (!token) {
       toast.error("Unauthorized user. Please login first.");
       navigate("/login");
       return;
@@ -39,19 +39,40 @@ const AddEventForm = () => {
     const user = JSON.parse(localStorage.getItem("userInfo"));
     console.log(user);
 
-    if(!user || user.role !=="admin"){
-      toast.error("Only admins are allowed.");
-      navigate("/", {replace : true});
+    if (!user || user.role !== 'admin') {
+      toast.error("Access denied. Admins only.");
+      navigate("/", { replace: true });
       return;
     }
-  },[navigate])
-  
+  }, [navigate]);
+
+  const CATEGORY_MAP = {
+    Technology: 1,
+    Music: 2,
+    Business: 3,
+    Sports: 4,
+    Art: 5,
+    Food: 6,
+    Education: 7,
+    Health: 8,
+    Entertainment: 9,
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
+
+    if (name === "category") {
+      setFormData({
+        ...formData,
+        category: value,
+        categoryId: CATEGORY_MAP[value] || 1,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: type === "checkbox" ? checked : value,
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -68,34 +89,31 @@ const AddEventForm = () => {
       });
     }
     try {
-      const response = await eventsAPI.addEvent(formData, token);
+      await eventsAPI.addEvent(formData);
 
-      if (!response.ok) {
-        return toast.error(response.data.message || "Failed to add event");
-      }
 
-      toast.success("Event added successfully!",{duration:3000});
+      toast.success("Event added successfully!", { duration: 3000 });
 
       setFormData({
-      title: "",
-      description: "",
-      date: "",
-      location: "",
-      price: "",
-      capacity: "",
-      imageUrl: "",
-      categoryId: "",
-      category: "",
-      vips: "",
-      workshops: "",
-      companies: "",
-      isFeatured: false,
-    });
+        title: "",
+        description: "",
+        date: "",
+        location: "",
+        price: "",
+        capacity: "",
+        imageUrl: "",
+        categoryId: 1,
+        category: "Technology",
+        vips: "",
+        workshops: "",
+        companies: "",
+        isFeatured: false,
+      });
     } catch (err) {
-        toast.error("Error adding Event!!!")
+      toast.error(err.response?.data?.message || "Failed to add event");
     }
-    finally{
-        setLoading(false);
+    finally {
+      setLoading(false);
     }
   };
   return (
@@ -105,9 +123,9 @@ const AddEventForm = () => {
           Add New Event
         </h2>
 
-        <form 
-            onSubmit={handleSubmit}
-            className="grid md:grid-cols-2 gap-8"
+        <form
+          onSubmit={handleSubmit}
+          className="grid md:grid-cols-2 gap-8"
         >
           {/* Left Column */}
           <div className="space-y-6">
@@ -168,33 +186,44 @@ const AddEventForm = () => {
 
           {/* Right Column */}
           <div className="space-y-6">
-            <Input
-              name="imageUrl"
-              label="Image URL"
-              type="text"
-              placeholder="Paste image link"
-              value={formData.imageUrl}
-              onChange={handleChange}
-              required
-            />
-            <Input
-              name="categoryId"
-              label="Category ID"
-              type="number"
-              placeholder="E.g. 1, 2, 3..."
-              value={formData.categoryId}
-              onChange={handleChange}
-              required
-            />
-            <Input
-              name="category"
-              label="Category"
-              type="text"
-              placeholder="E.g. Tech, Music, Business"
-              value={formData.category}
-              onChange={handleChange}
-              required
-            />
+            {/* Image URL Help */}
+            <div className="flex flex-col">
+              <label htmlFor="imageUrl" className="mb-1 text-lg font-medium text-purple-700">
+                Image URL
+              </label>
+              <input
+                id="imageUrl"
+                name="imageUrl"
+                type="text"
+                placeholder="https://example.com/image.jpg"
+                value={formData.imageUrl}
+                onChange={handleChange}
+                required
+                className="border border-purple-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400 bg-[#FFF8E9] text-gray-800"
+              />
+              <span className="text-xs text-purple-500 mt-1">Must be a valid URL ending in .jpg, .png, etc.</span>
+            </div>
+
+            {/* Category Dropdown */}
+            <div className="flex flex-col">
+              <label htmlFor="category" className="mb-1 text-lg font-medium text-purple-700">
+                Category
+              </label>
+              <select
+                id="category"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+                className="border border-purple-200 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400 bg-[#FFF8E9] text-gray-800"
+              >
+                {Object.keys(CATEGORY_MAP).map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
             <Input
               name="vips"
               label="VIPs"
@@ -238,14 +267,14 @@ const AddEventForm = () => {
               </label>
             </div>
           </div>
-                  <div className="mt-10 flex justify-center">
-          <button
-            type="submit"
-            className="w-full bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 text-white px-8 py-3 rounded-xl font-semibold shadow-md transition duration-200"
-          >
-            {loading ? "Adding..." : "Add Event"}
-          </button>
-        </div>
+          <div className="mt-10 flex justify-center">
+            <button
+              type="submit"
+              className="w-full bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 text-white px-8 py-3 rounded-xl font-semibold shadow-md transition duration-200"
+            >
+              {loading ? "Adding..." : "Add Event"}
+            </button>
+          </div>
         </form>
 
       </div>
@@ -253,7 +282,7 @@ const AddEventForm = () => {
   );
 };
 
-const Input = ({ label, type = "text", placeholder, name, onChange, value, required}) => (
+const Input = ({ label, type = "text", placeholder, name, onChange, value, required }) => (
   <div className="flex flex-col">
     <label htmlFor={name} className="mb-1 text-lg font-medium text-purple-700">
       {label}

@@ -20,7 +20,7 @@ const Login = () => {
     try {
       const response = await authAPI.login(email, password);
 
-      if (response.ok && response.data.accessToken) {
+      if (response.data.accessToken) {
         localStorage.setItem("token", response.data.accessToken);
         const decoded = jwtDecode(response.data.accessToken);
         localStorage.setItem(
@@ -32,12 +32,10 @@ const Login = () => {
         );
         toast.success("Login Successful!!!", { duration: 800 });
         setTimeout(() => navigate("/"), 500);
-      } else {
-        toast.error(response.data?.message || "Invalid email or password");
       }
     } catch (err) {
       console.log(err.message);
-      toast.error("Login Error");
+      toast.error(err.response?.data?.message || "Invalid email or password");
     } finally {
       setLoading(false);
     }
@@ -116,11 +114,10 @@ const Login = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`w-full py-3 rounded-xl font-semibold transition-all duration-300 ${
-                    loading
+                  className={`w-full py-3 rounded-xl font-semibold transition-all duration-300 ${loading
                       ? "bg-gray-400 cursor-not-allowed"
                       : "btn-primary hover:shadow-lg hover:shadow-purple-500/25"
-                  }`}
+                    }`}
                 >
                   {loading ? (
                     <div className="flex items-center justify-center gap-2">

@@ -1,5 +1,12 @@
 const express = require("express")
-const {getAllEvents, getEventById, addEvent, updateEvent, deleteEvent} = require("../controllers/event-controllers");
+const {
+    getAllEvents,
+    getEventById,
+    addEvent,
+    updateEvent,
+    deleteEvent,
+    registerForEvent
+} = require("../controllers/event-controllers");
 const authMiddleware = require("../middleware/auth-middleware")
 const router = express.Router();
 
@@ -12,5 +19,6 @@ router.get("/events", authMiddleware, getAllEvents); // Get all events with pagi
 router.post("/events/add", authMiddleware, addEvent); // Add new event
 router.put("/events/:id", authMiddleware, updateEvent); // Update event
 router.delete("/events/:id", authMiddleware, deleteEvent); // Delete event
+router.post("/events/:id/register", authMiddleware, registerForEvent); // Register for event
 
 module.exports = router;

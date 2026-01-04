@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import register from "../assets/register.avif";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { authAPI } from "../config/api";
 
 const Register = () => {
@@ -20,12 +20,6 @@ const Register = () => {
     try {
       const response = await authAPI.register(username, email, password);
 
-      if (!response.ok) {
-        return toast.error(response.data.message || "Error in Registration", {
-          duration: 3000,
-        });
-      }
-
       if (response.data.accessToken) {
         localStorage.setItem("token", response.data.accessToken);
         const decoded = jwtDecode(response.data.accessToken);
@@ -38,12 +32,9 @@ const Register = () => {
         );
         toast.success("Registration successful!", { duration: 1000 });
         setTimeout(() => navigate("/"), 500);
-      } else {
-        toast.error(response.data?.message || "Registration failed");
-        return;
       }
     } catch (err) {
-      toast.error("Something went wrong! Please try again", { duration: 3000 });
+      toast.error(err.response?.data?.message || "Registration failed", { duration: 3000 });
     } finally {
       setLoading(false);
     }
@@ -153,11 +144,10 @@ const Register = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`w-full py-3 rounded-xl font-semibold transition-all duration-300 ${
-                    loading
+                  className={`w-full py-3 rounded-xl font-semibold transition-all duration-300 ${loading
                       ? "bg-gray-400 cursor-not-allowed"
                       : "btn-primary hover:shadow-lg hover:shadow-purple-500/25"
-                  }`}
+                    }`}
                 >
                   {loading ? (
                     <div className="flex items-center justify-center gap-2">

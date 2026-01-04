@@ -12,8 +12,13 @@ export const useTheme = () => {
 
 export const ThemeProvider = ({ children }) => {
   const [isDark, setIsDark] = useState(() => {
-    const saved = localStorage.getItem('theme');
-    return saved ? JSON.parse(saved) : false;
+    try {
+      const saved = localStorage.getItem('theme');
+      return saved ? JSON.parse(saved) : false;
+    } catch (error) {
+      console.error('Error parsing theme from localStorage:', error);
+      return false;
+    }
   });
 
   useEffect(() => {

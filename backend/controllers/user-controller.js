@@ -45,4 +45,29 @@ const editInfo = async (req, res) => {
   }
 };
 
-module.exports = { findMe, editInfo };
+const Registration = require("../models/Registration");
+
+// ... existing code ...
+
+const getUserRegistrations = async (req, res) => {
+  try {
+    const userId = req.userInfo.userId;
+
+    const registrations = await Registration.find({ user: userId })
+      .populate("event")
+      .sort({ registeredAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      registrations,
+    });
+  } catch (error) {
+    console.error("Error fetching registrations:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch registrations",
+    });
+  }
+};
+
+module.exports = { findMe, editInfo, getUserRegistrations };

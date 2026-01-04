@@ -6,9 +6,13 @@ import { useNavigate } from "react-router-dom";
 export default function HeroSection() {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-  
+
   const handleClick = () => {
-    navigate("/events");
+    if (searchTerm.trim()) {
+      navigate(`/events?search=${encodeURIComponent(searchTerm)}`);
+    } else {
+      navigate("/events");
+    }
   }
 
   return (
@@ -28,9 +32,9 @@ export default function HeroSection() {
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-20 h-20 bg-pink-400/20 rounded-full animate-float"></div>
-        <div className="absolute top-40 right-20 w-16 h-16 bg-purple-400/20 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
-        <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-red-400/20 rounded-full animate-float" style={{animationDelay: '4s'}}></div>
-        <div className="absolute bottom-40 right-1/3 w-14 h-14 bg-pink-400/20 rounded-full animate-float" style={{animationDelay: '1s'}}></div>
+        <div className="absolute top-40 right-20 w-16 h-16 bg-purple-400/20 rounded-full animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-red-400/20 rounded-full animate-float" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute bottom-40 right-1/3 w-14 h-14 bg-pink-400/20 rounded-full animate-float" style={{ animationDelay: '1s' }}></div>
       </div>
 
       {/* Overlay */}
@@ -50,7 +54,7 @@ export default function HeroSection() {
             <br />
             <span className="text-white">Events Near You</span>
           </h1>
-          
+
           <p className="text-xl md:text-2xl text-gray-200 mb-12 max-w-3xl mx-auto leading-relaxed">
             From concerts and conferences to meetups and workshops - explore and register with ease.
             <br />
@@ -70,7 +74,7 @@ export default function HeroSection() {
               />
             </div>
 
-            <button 
+            <button
               onClick={handleClick}
               className="btn-primary text-lg px-8 py-4 flex items-center gap-3 group"
             >

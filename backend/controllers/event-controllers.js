@@ -6,20 +6,20 @@ const getAllEvents = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
-    
+
     // Build filter object
     const filter = {};
-    
+
     // Filter by category if provided
     if (req.query.category) {
       filter.category = req.query.category;
     }
-    
+
     // Filter by featured if provided (accepts true/false, 1/0)
     if (req.query.featured !== undefined) {
       filter.isFeatured = ['true', '1'].includes(req.query.featured);
     }
-    
+
     // Search by title if provided
     if (req.query.search) {
       filter.title = { $regex: req.query.search, $options: 'i' };
@@ -60,6 +60,12 @@ const addEvent = async (req, res) => {
   try {
     const eventData = req.body;
 
+    // Set status to approved by default
+    eventData.status = 'approved';
+    if (req.user) {
+      eventData.createdBy = req.user.id;
+    }
+
     // Input validation
     const requiredFields = [
       'title', 'description', 'date', 'location',
@@ -69,7 +75,7 @@ const addEvent = async (req, res) => {
     const missingFields = requiredFields.filter(field =>
       eventData[field] === undefined || eventData[field] === null || eventData[field] === ""
     );
-    
+
     if (missingFields.length > 0) {
       return res.status(400).json({
         success: false,
@@ -111,7 +117,7 @@ const addEvent = async (req, res) => {
     });
   } catch (err) {
     console.error("Error saving event:", err);
-    
+
     // Handle validation errors
     if (err.name === 'ValidationError') {
       const errors = Object.values(err.errors).map(e => e.message);
@@ -133,13 +139,6 @@ const addEvent = async (req, res) => {
 const getEventById = async (req, res) => {
   try {
     const { id } = req.params;
-
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid event ID format",
-      });
-    }
 
     const event = await Event.findById(id);
 
@@ -197,7 +196,7 @@ const updateEvent = async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating event:", error);
-    
+
     if (error.name === 'ValidationError') {
       const errors = Object.values(error.errors).map(e => e.message);
       return res.status(400).json({
@@ -219,13 +218,6 @@ const deleteEvent = async (req, res) => {
   try {
     const { id } = req.params;
 
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid event ID format",
-      });
-    }
-
     const event = await Event.findByIdAndDelete(id);
 
     if (!event) {
@@ -240,10 +232,54 @@ const deleteEvent = async (req, res) => {
       message: "Event deleted successfully",
     });
   } catch (error) {
-    console.error("Error deleting event:", error);
     res.status(500).json({
       success: false,
       message: "Server error while deleting event",
+    });
+  }
+};
+
+const Registration = require("../models/Registration");
+
+// ... existing code ...
+
+const registerForEvent = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.userInfo.userId;
+
+    // Check if event exists
+    const event = await Event.findById(id);
+    if (!event) {
+      return res.status(404).json({ success: false, message: "Event not found" });
+    }
+
+    // Check if already registered
+    const existingRegistration = await Registration.findOne({
+      user: userId,
+      event: id,
+    });
+
+    if (existingRegistration) {
+      return res.status(400).json({ success: false, message: "You are already registered for this event" });
+    }
+
+    // Create registration
+    const registration = await Registration.create({
+      user: userId,
+      event: id,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Registration successful",
+      registration,
+    });
+  } catch (error) {
+    console.error("Error registering for event:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while registering",
     });
   }
 };
@@ -253,5 +289,6 @@ module.exports = {
   getEventById,
   addEvent,
   updateEvent,
-  deleteEvent
+  deleteEvent,
+  registerForEvent
 };

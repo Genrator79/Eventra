@@ -12,24 +12,20 @@ const Home = () => {
   const didRun = useRef(false);
 
   useEffect(() => {
-    if(didRun.current) return; 
-    didRun.current=true;
+    if (didRun.current) return;
+    didRun.current = true;
     const fetchEvents = async () => {
       try {
         setLoading(true);
         const response = await eventsAPI.getFeaturedEvents();
 
-        if (response.ok) {
-          // Using original backend response format
-          setAllEvents(response.data.events || []);
-        } else {
-          toast.error(response.data.message || "Failed to load Featured events, Try Again", {
-            duration: 4000,
-          });
-        }
+        // Using original backend response format
+        setAllEvents(response.data.events || []);
       } catch (err) {
         console.error(err);
-        toast.warning("Error fetching events", { duration: 4000 });
+        toast.error(err.response?.data?.message || "Failed to load Featured events, Try Again", {
+          duration: 4000,
+        });
       } finally {
         setLoading(false);
       }
@@ -42,7 +38,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900">
       <Hero />
-      
+
       {/* Featured Events Section */}
       <section className="max-w-7xl mx-auto px-4 py-20">
         <div className="text-center mb-16">
@@ -80,7 +76,7 @@ const Home = () => {
             </div>
             <h3 className="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-4">No Featured Events Yet</h3>
             <p className="text-gray-500 dark:text-gray-400 mb-8">Check back soon for amazing events!</p>
-            <button 
+            <button
               onClick={() => window.location.href = '/events'}
               className="btn-primary"
             >

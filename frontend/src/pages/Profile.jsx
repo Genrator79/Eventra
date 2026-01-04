@@ -14,7 +14,7 @@ const Profile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if(didRun.current) return;
+    if (didRun.current) return;
     didRun.current = true;
     const fetchUser = async () => {
       const token = localStorage.getItem("token");
@@ -27,15 +27,10 @@ const Profile = () => {
 
       try {
         setLoading(true);
-        const response = await userAPI.getProfile(token);
-
-        if (response.ok) {
-          setUser(response.data.user);
-        } else {
-          toast.error(response.data?.message || "Failed to load user info");
-        }
+        const response = await userAPI.getProfile();
+        setUser(response.data.user);
       } catch (err) {
-        toast.error("Error fetching profile");
+        toast.error(err.response?.data?.message || "Failed to load user info");
       } finally {
         setLoading(false);
       }
@@ -44,39 +39,48 @@ const Profile = () => {
     fetchUser();
   }, [navigate]);
 
-  console.log(user);
-  const [registeredEvents, setRegisteredEvents] = useState([
-    {
-      id: 1,
-      title: "ReactConf 2025",
-      date: "August 22, 2025",
-      image: eventImg,
-    },
-    {
-      id: 2,
-      title: "AI Summit Delhi",
-      date: "September 5, 2025",
-      image: eventImg,
-    },
-  ]);
+  useEffect(() => {
+    const fetchRegistrations = async () => {
+      try {
+        const res = await userAPI.getRegistrations();
+        const allRegistrations = res.data.registrations || [];
+
+        const now = new Date();
+        const upcoming = [];
+        const past = [];
+
+        allRegistrations.forEach(reg => {
+          const eventDate = new Date(reg.event.date);
+          const eventData = {
+            id: reg.event._id,
+            title: reg.event.title,
+            date: eventDate.toLocaleDateString(),
+            image: reg.event.imageUrl
+          };
+
+          if (eventDate >= now) {
+            upcoming.push(eventData);
+          } else {
+            past.push(eventData);
+          }
+        });
+
+        setRegisteredEvents(upcoming);
+        setPastEvents(past);
+
+      } catch (error) {
+        console.error("Failed to fetch registrations", error);
+      }
+    };
+    fetchRegistrations();
+  }, []);
+
+  const [registeredEvents, setRegisteredEvents] = useState([]);
+  const [pastEvents, setPastEvents] = useState([]);
 
   const navtodetails = () => {
     navigate("/profile/userDetails");
   };
-  const [pastEvents, setPastEvents] = useState([
-    {
-      id: 3,
-      title: "Startup Meetup 2024",
-      date: "March 18, 2024",
-      image: eventImg,
-    },
-    {
-      id: 4,
-      title: "Tech Carnival 2023",
-      date: "December 12, 2023",
-      image: eventImg,
-    },
-  ]);
 
   if (loading) {
     return <ProfileSkeleton />;
@@ -138,26 +142,30 @@ const Profile = () => {
           <h3 className="text-2xl font-semibold text-purple-800 mb-4">
             Registered Events
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {registeredEvents?.map((event) => (
-              <div
-                key={event.id}
-                className="bg-gradient-to-br from-purple-50 via-pink-50 to-purple-100 rounded-lg shadow-md overflow-hidden"
-              >
-                <img
-                  src={event.image}
-                  alt={event.title}
-                  className="h-48 w-full object-cover"
-                />
-                <div className="p-4">
-                  <h4 className="text-lg font-semibold text-purple-800">
-                    {event.title}
-                  </h4>
-                  <p className="text-gray-700 text-sm">{event.date}</p>
+          {registeredEvents.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {registeredEvents.map((event) => (
+                <div
+                  key={event.id}
+                  className="bg-gradient-to-br from-purple-50 via-pink-50 to-purple-100 rounded-lg shadow-md overflow-hidden"
+                >
+                  <img
+                    src={event.image}
+                    alt={event.title}
+                    className="h-48 w-full object-cover"
+                  />
+                  <div className="p-4">
+                    <h4 className="text-lg font-semibold text-purple-800">
+                      {event.title}
+                    </h4>
+                    <p className="text-gray-700 text-sm">{event.date}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 italic">No upcoming events registered.</p>
+          )}
         </div>
 
         {/* Past Events */}
@@ -165,26 +173,30 @@ const Profile = () => {
           <h3 className="text-2xl font-semibold text-pink-700 mb-4">
             Past Attended Events
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {pastEvents?.map((event,index) => (
-              <div
-                key={index}
-                className="bg-gradient-to-br from-pink-50 via-purple-50 to-pink-100 rounded-lg shadow-md overflow-hidden"
-              >
-                <img
-                  src={event.image}
-                  alt={event.title}
-                  className="h-48 w-full object-cover"
-                />
-                <div className="p-4">
-                  <h4 className="text-lg font-semibold text-pink-700">
-                    {event.title}
-                  </h4>
-                  <p className="text-gray-700 text-sm">{event.date}</p>
+          {pastEvents.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {pastEvents.map((event, index) => (
+                <div
+                  key={index}
+                  className="bg-gradient-to-br from-pink-50 via-purple-50 to-pink-100 rounded-lg shadow-md overflow-hidden"
+                >
+                  <img
+                    src={event.image}
+                    alt={event.title}
+                    className="h-48 w-full object-cover"
+                  />
+                  <div className="p-4">
+                    <h4 className="text-lg font-semibold text-pink-700">
+                      {event.title}
+                    </h4>
+                    <p className="text-gray-700 text-sm">{event.date}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 italic">No past events found.</p>
+          )}
         </div>
 
         {/* Suggestions / Recommendations */}

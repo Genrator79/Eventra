@@ -13,15 +13,14 @@ const PORT = process.env.PORT || 9000;
 
 // CORS configuration - keeping your hosted URL
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production' 
-        ? "https://eventra-5j2m.onrender.com" 
+    origin: process.env.NODE_ENV === 'production'
+        ? "https://eventra-5j2m.onrender.com"
         : ["http://localhost:3000", "http://localhost:5173", "https://eventra-5j2m.onrender.com"],
     credentials: true,
 }));
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Routes
 app.use("/api/auth", authRoutes);

@@ -1,149 +1,109 @@
+import axios from 'axios';
+
 // API Configuration
-export const API_BASE_URL = "https://eventra-backend-lsy8.onrender.com";
+export const API_BASE_URL = "http://localhost:9000";
+
+// Create Axios instance
+const axiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Request interceptor for adding the bearer token
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor for handling common errors (optional but good practice)
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // API Endpoints
 export const API_ENDPOINTS = {
   // Auth endpoints
-  LOGIN: `${API_BASE_URL}/api/auth/login`,
-  REGISTER: `${API_BASE_URL}/api/auth/register`,
-  
+  LOGIN: `/api/auth/login`,
+  REGISTER: `/api/auth/register`,
+
   // Event endpoints
-  EVENTS: `${API_BASE_URL}/api/events`,
-  EVENTS_FEATURED: `${API_BASE_URL}/api/events/featured`,
-  EVENT_BY_ID: (id) => `${API_BASE_URL}/api/events/${id}`,
-  ADD_EVENT: `${API_BASE_URL}/api/events/add`,
-  UPDATE_EVENT: (id) => `${API_BASE_URL}/api/events/${id}`,
-  DELETE_EVENT: (id) => `${API_BASE_URL}/api/events/${id}`,
-  
+  EVENTS: `/api/events`,
+  EVENTS_FEATURED: `/api/events/featured`,
+  EVENT_BY_ID: (id) => `/api/events/${id}`,
+  ADD_EVENT: `/api/events/add`,
+  UPDATE_EVENT: (id) => `/api/events/${id}`,
+  DELETE_EVENT: (id) => `/api/events/${id}`,
+
   // User endpoints
-  USER_ME: `${API_BASE_URL}/api/user/me`,
-  USER_UPDATE: `${API_BASE_URL}/api/user/me/update`,
-  
+  USER_ME: `/api/user/me`,
+  USER_UPDATE: `/api/user/me/update`,
+
   // Health check
-  HEALTH: `${API_BASE_URL}/api/health`,
-};
-
-// API Helper Functions
-export const apiRequest = async (url, options = {}) => {
-  const defaultOptions = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
-  const config = {
-    ...defaultOptions,
-    ...options,
-    headers: {
-      ...defaultOptions.headers,
-      ...options.headers,
-    },
-  };
-
-  try {
-    const response = await fetch(url, config);
-    const data = await response.json();
-    
-    return {
-      ok: response.ok,
-      status: response.status,
-      data,
-    };
-  } catch (error) {
-    console.error('API Request Error:', error);
-    return {
-      ok: false,
-      status: 500,
-      data: { success: false, message: 'Network error' },
-    };
-  }
+  HEALTH: `/api/health`,
 };
 
 // Auth API calls
 export const authAPI = {
-  login: async (email, password) => {
-    return apiRequest(API_ENDPOINTS.LOGIN, {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    });
+  login: (email, password) => {
+    return axiosInstance.post(API_ENDPOINTS.LOGIN, { email, password });
   },
-  
-  register: async (username, email, password) => {
-    return apiRequest(API_ENDPOINTS.REGISTER, {
-      method: 'POST',
-      body: JSON.stringify({ username, email, password }),
-    });
+
+  register: (username, email, password) => {
+    return axiosInstance.post(API_ENDPOINTS.REGISTER, { username, email, password });
   },
 };
 
 // Events API calls
 export const eventsAPI = {
-  getAllEvents: async (token, params = {}) => {
-    const queryString = new URLSearchParams(params).toString();
-    const url = queryString ? `${API_ENDPOINTS.EVENTS}?${queryString}` : API_ENDPOINTS.EVENTS;
-    
-    return apiRequest(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  getAllEvents: (params = {}) => {
+    return axiosInstance.get(API_ENDPOINTS.EVENTS, { params });
   },
-  
-  getFeaturedEvents: async () => {
-    return apiRequest(API_ENDPOINTS.EVENTS_FEATURED);
+
+  getFeaturedEvents: () => {
+    return axiosInstance.get(API_ENDPOINTS.EVENTS_FEATURED);
   },
-  
-  getEventById: async (id) => {
-    return apiRequest(API_ENDPOINTS.EVENT_BY_ID(id));
+
+  getEventById: (id) => {
+    return axiosInstance.get(API_ENDPOINTS.EVENT_BY_ID(id));
   },
-  
-  addEvent: async (eventData, token) => {
-    return apiRequest(API_ENDPOINTS.ADD_EVENT, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(eventData),
-    });
+
+  addEvent: (eventData) => {
+    return axiosInstance.post(API_ENDPOINTS.ADD_EVENT, eventData);
   },
-  
-  updateEvent: async (id, eventData, token) => {
-    return apiRequest(API_ENDPOINTS.UPDATE_EVENT(id), {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(eventData),
-    });
+
+  updateEvent: (id, eventData) => {
+    return axiosInstance.put(API_ENDPOINTS.UPDATE_EVENT(id), eventData);
   },
-  
-  deleteEvent: async (id, token) => {
-    return apiRequest(API_ENDPOINTS.DELETE_EVENT(id), {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  },
+
+  deleteEvent: (id) => axiosInstance.delete(`/events/${id}`),
+
+  registerEvent: (id) => axiosInstance.post(`/api/events/${id}/register`),
 };
 
 // User API calls
 export const userAPI = {
-  getProfile: async (token) => {
-    return apiRequest(API_ENDPOINTS.USER_ME, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  getProfile: () => {
+    return axiosInstance.get(API_ENDPOINTS.USER_ME);
   },
-  
-  updateProfile: async (userData, token) => {
-    return apiRequest(API_ENDPOINTS.USER_UPDATE, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(userData),
-    });
+
+  updateProfile: (userData) => {
+    return axiosInstance.put(API_ENDPOINTS.USER_UPDATE, userData);
   },
+
+  getRegistrations: () => axiosInstance.get("/api/user/me/registrations"),
 };
+
+export default axiosInstance;

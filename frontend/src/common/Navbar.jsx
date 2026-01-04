@@ -1,17 +1,15 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FiHome, FiMenu, FiX, FiUser, FiLogOut } from "react-icons/fi";
+import { FiHome, FiMenu, FiX, FiUser, FiLogOut, FiPlusSquare } from "react-icons/fi";
 import { LuCalendarDays } from "react-icons/lu";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import { FiEdit } from "react-icons/fi";
-import { Sparkles, Sun, Moon } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { toast } from "sonner";
-import { useTheme } from "../contexts/ThemeContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isDark, toggleTheme } = useTheme();
 
   const [auth, setAuth] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
@@ -60,9 +58,9 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-16 relative">
           {/* Mobile Menu Button */}
-          <div className="lg:hidden">
+          <div className="lg:hidden flex items-center">
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
@@ -72,46 +70,45 @@ const Navbar = () => {
           </div>
 
           {/* Left - Logo */}
-          <Link to="/" className="flex items-center space-x-2 group">
-            <div className="w-10 h-10 bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Sparkles className="w-6 h-6 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold gradient-text hidden sm:block">
-              Eventra
-            </h1>
-          </Link>
+          <div className="flex items-center">
+            <Link to="/" className="flex items-center space-x-2 group">
+              <div className="w-10 h-10 bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+                <Sparkles className="w-6 h-6 text-white" />
+              </div>
+              <h1 className="text-2xl font-bold gradient-text hidden sm:block">
+                Eventra
+              </h1>
+            </Link>
+          </div>
 
-          {/* Center - Nav Links (Desktop) */}
-          <div className="hidden lg:flex items-center space-x-8">
+          {/* Center - Nav Links (Desktop) - Absolutely centered */}
+          <div className="hidden lg:flex items-center absolute left-1/2 transform -translate-x-1/2 space-x-1">
             <Link
               to="/"
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
-                location.pathname === "/"
-                  ? "bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-              }`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all duration-300 ${location.pathname === "/"
+                ? "bg-purple-100 text-purple-700 shadow-sm"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
             >
               <FiHome className="w-4 h-4" />
               Home
             </Link>
             <Link
               to="/events"
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
-                location.pathname === "/events"
-                  ? "bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-              }`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all duration-300 ${location.pathname === "/events"
+                ? "bg-purple-100 text-purple-700 shadow-sm"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
             >
               <LuCalendarDays className="w-4 h-4" />
               Events
             </Link>
             <Link
               to="/about"
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
-                location.pathname === "/about"
-                  ? "bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-              }`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-all duration-300 ${location.pathname === "/about"
+                ? "bg-purple-100 text-purple-700 shadow-sm"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
             >
               <AiOutlineInfoCircle className="w-4 h-4" />
               About
@@ -119,15 +116,7 @@ const Navbar = () => {
           </div>
 
           {/* Right - Auth & User Actions */}
-          <div className="flex items-center space-x-3">
-            {/* Dark Mode Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            >
-              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
-
+          <div className="flex items-center space-x-4">
             {auth && userInfo ? (
               <>
                 {/* User Profile Dropdown */}
@@ -137,7 +126,7 @@ const Navbar = () => {
                       Welcome back, <span className="text-purple-600 font-semibold">{userInfo.username}</span>
                     </span>
                   </div>
-                  
+
                   <button
                     onClick={handleClick}
                     className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
@@ -194,11 +183,10 @@ const Navbar = () => {
               <Link
                 to="/"
                 onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors ${
-                  location.pathname === "/"
-                    ? "bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700"
-                    : "text-gray-700 hover:bg-gray-50"
-                }`}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors ${location.pathname === "/"
+                  ? "bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700"
+                  : "text-gray-700 hover:bg-gray-50"
+                  }`}
               >
                 <FiHome className="w-5 h-5" />
                 Home
@@ -206,11 +194,10 @@ const Navbar = () => {
               <Link
                 to="/events"
                 onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors ${
-                  location.pathname === "/events"
-                    ? "bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700"
-                    : "text-gray-700 hover:bg-gray-50"
-                }`}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors ${location.pathname === "/events"
+                  ? "bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700"
+                  : "text-gray-700 hover:bg-gray-50"
+                  }`}
               >
                 <LuCalendarDays className="w-5 h-5" />
                 Events
@@ -218,11 +205,10 @@ const Navbar = () => {
               <Link
                 to="/about"
                 onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors ${
-                  location.pathname === "/about"
-                    ? "bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700"
-                    : "text-gray-700 hover:bg-gray-50"
-                }`}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors ${location.pathname === "/about"
+                  ? "bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700"
+                  : "text-gray-700 hover:bg-gray-50"
+                  }`}
               >
                 <AiOutlineInfoCircle className="w-5 h-5" />
                 About

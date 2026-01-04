@@ -37,7 +37,6 @@
 - **Node.js & Express** - Scalable server-side runtime.
 - **MongoDB & Mongoose** - Flexible NoSQL schema design.
 - **JWT (JSON Web Tokens)** - Secure authentication.
-- **Cloudinary** - Optimized media management and storage.
 
 ---
 
@@ -46,11 +45,10 @@
 ### **Prerequisites**
 - Node.js (v16+)
 - MongoDB Atlas Connection String
-- Cloudinary API Credentials
 
 ### **1. Clone the Repository**
 ```bash
-git clone https://github.com/Genrator79/Eventra.git
+git clone https://github.com/Genrator79/Eventra
 cd Eventra
 ```
 
@@ -63,9 +61,7 @@ npm install
 echo "PORT=9000" > .env
 echo "MONGO_URI=your_mongodb_connection_string" >> .env
 echo "JWT_SECRET_KEY=your_secure_secret" >> .env
-echo "CLOUDINARY_CLOUD_NAME=your_cloud_name" >> .env
-echo "CLOUDINARY_API_KEY=your_api_key" >> .env
-echo "CLOUDINARY_API_SECRET=your_api_secret" >> .env
+
 
 # Start Server
 npm start
